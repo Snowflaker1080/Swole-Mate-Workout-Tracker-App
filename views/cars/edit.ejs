@@ -1,0 +1,19 @@
+<body>
+  <!-- header -->
+  <h1>Edit <%= car.name %></h1>
+
+  <form action="/cars/<%=fruit._id%>?_method=PUT" method="POST">
+
+    <label for="name">Name:</label>
+    <input type="text" name="name" value="<%= car.name %>" />
+
+    <label for="typeOfCar">Type of Car?</label>
+    <input type="checkbox" name="typeOfCar" <% if (car.typeOfCar) { %>checked<% } %> />
+
+    <!-- button -->
+    <button type="submit">Update Car</button>
+
+  </form>
+  <a href="/cars">Back to Cars</a>
+
+</body>
