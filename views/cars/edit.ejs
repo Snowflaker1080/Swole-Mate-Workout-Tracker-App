@@ -1,19 +1,39 @@
-<body>
-  <!-- header -->
-  <h1>Edit <%= car.name %></h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <form action="/cars/<%=fruit._id%>?_method=PUT" method="POST">
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
 
-    <label for="name">Name:</label>
-    <input type="text" name="name" value="<%= car.name %>" />
+  <body>
+    <!-- header -->
+    <h1>Edit <%= car.name %></h1>
 
-    <label for="typeOfCar">Type of Car?</label>
-    <input type="checkbox" name="typeOfCar" <% if (car.typeOfCar) { %>checked<% } %> />
+    <form action="/cars/<%=car._id%>?_method=PUT" method="POST">
+      <label for="name">Name:</label>
+      <input type="text" name="name" value="<%= car.name %>" />
 
-    <!-- button -->
-    <button type="submit">Update Car</button>
+      <div class="checkbox-div">
+        <label for="typeOfCar">Type of Car?</label>
+        <input
+          type="checkbox"
+          name="typeOfCar"
+          <%
+          if(car.typeOfCar){%>checked<% } %> >
+      </div>
 
-  </form>
-  <a href="/cars">Back to Cars</a>
+      <!-- button -->
+      <button type="submit">Update Car</button>
+    </form>
 
-</body>
+    <a class="cars-index-link" href="/cars">
+      <div class="index-link-text">Browse Cars</div>
+    </a>
+
+    <a class="home-link" href="/">
+      <div class="home-link-text">Home</div>
+    </a>
+  </body>
+</html>

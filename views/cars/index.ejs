@@ -3,19 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Cars Index</title>
   </head>
+
   <body>
-     <h1>All Cars</h1>
-  <ul>
-    <% cars.forEach(car => { %>
-      <li>
-          <a href="/cars/<%= car._id %>"> <%= car.name %> </a>
-      </li>
-    <% }); %>
-  </ul>
+    <div class="main-container">
+      <h1>All Cars</h1>
+
+      <!-- Car List -->
+      <ul>
+        <% cars.forEach(car => { %>
+          <li>
+            <a class="car-cards" href="/cars/<%= car._id %>">
+              <div class="car-name"><%= car.name %></div>
+            </a>
+          </li>
+        <% }) %>
+      </ul>
+
+      <h1>GTA Vehicles</h1>
+
+<ul>
+  <% cars.forEach(car => { %>
+    <li>
+      <h3><%= car.displayName %></h3>
+      <p><%= car.manufacturer %> - <%= car.class %></p>
+      <img
+        src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
+        alt="<%= car.displayName %> image"
+        onerror="this.src='/stylesheets/images/placeholder.jpg';"
+        style="max-width: 300px;"
+      />
+    </li>
+  <% }) %>
+</ul>
+
+        <!-- Car & Home Links -->
+      <div class="nav-links">
+        <a class="add-car" href="/cars/new">Add Car</a>
+
+        <a href="/gtav/vehicles">View GTA V Vehicles</a>
+        
+        <a class="home-link" href="/">
+          <div class="home-link-text">Home</div>
+        </a>
+      </div>
+
+    </div>
   </body>
-
-  <a href="/cars/new">Add New Car</a>
-
 </html>

@@ -1,33 +1,52 @@
-Copy
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= car.name %></title> 
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Car Show Page</title> 
   </head>
 
   <body>
-
-    <h1><%= car.name %>/h1>
+<div class="car-details">
+    <h1><%= car.name %></h1>
           <% if (car.typeOfCar) { %>
-    <p>This is type of car!</p>
+    <p>This is a type of car!</p>
   <% } else { %>
-    <p>This is not type of car!</p>
+    <p>This is not a type of car!</p>
   <% } %>
 
 
-  <!-- delete button -->
-<form action="/cars/<%=car._id%>?_method=DELETE" method="POST">
-  <button type="submit">Delete <%= car.name %></button>
+  <!-- Delete Button -->
+   <div class="car-actions">
+<form 
+  class="delete-form"
+  action="/cars/<%=car._id%>?_method=DELETE" 
+  method="POST">
+
+  <button 
+  class="delete-button" 
+  type="submit">
+  Delete <%= car.name %>
+  </button>
 </form>
+</div>
 
-<!-- add edit page link here -->
-<a href="/cars/<%= car._id %>/edit">Edit <%= car.name %></a>
-<a href="/cars/">Back to Cars</a>
+<!-- Edit Page Link -->
+  <a class="edit-link" href="/cars/<%= car._id %>/edit">
+    <div class="edit-text">Edit <%= car.name %></div>
+  </a>
 
+<!-- Browse Cars Link -->
+  <a class="cars-index-link" href="/cars"> 
+    <div class="index-link-text">Browse Cars</div>
+  </a>
+
+<!-- Home Page Link -->
+  <a class="home-link" href="/">
+    <div class="home-link-text">Home</div>
+  </a>
+    
 </body>
-
-
 
 </html>

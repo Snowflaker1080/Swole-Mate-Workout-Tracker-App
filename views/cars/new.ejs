@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Create a New Car</title>
   </head>
 
-<body>
-  <h1>Create a New Car!</h1>
+  <body>
+    <div class="new-car-container">
+      <h1 class="gta-title">Create a New Car!</h1>
 
-  <form action="/cars" method="POST">
-    <label for="make">Make of Car:</label>
-    <input type="text" name="make" id="make" />
+      <form class="gta-form" action="/cars" method="POST">
+        <label for="name">Car Name:</label>
+        <input type="text" name="name" id="name" required />
 
-    <label for="typeOfCar">Type of Car?</label>
-    <input type="checkbox" name="typeOfCart" id="typeOfCar" />
+        <div class="checkbox-div">
+          <label for="typeOfCar">Type of Car?</label>
+          <input type="checkbox" name="typeOfCar" id="typeOfCar" />
+        </div>
 
-    <button type="submit">Add Car</button>
+        <button class="submit-btn" type="submit">Add Car</button>
+      </form>
 
-  </form>
-
-</body>
-
-<a href="/cars/">Back to Cars</a>
-
+      <div class="nav-links">
+        <a class="back-link" href="/cars/">← Back to Cars</a>
+        <a class="home-link" href="/">
+          <div class="home-link-text">Home</div>
+        </a>
+      </div>
+    </div>
+  </body>
 </html>

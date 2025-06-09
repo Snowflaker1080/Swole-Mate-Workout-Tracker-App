@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>GTA V Vehicles</title>
+  </head>
+
+  <body>
+    <div class="main-container">
+      <h1>GTA V Vehicles</h1>
+
+<ul class="vehicle-list">
+  <% cars.forEach(car => { %>
+    <li class="vehicle-card">
+      <h3 class="vehicle-name"><%= car.DisplayName?.English || car.DisplayName?.Name %></h3>
+      <p class="vehicle-details">
+        <%= car.ManufacturerDisplayName?.English || car.ManufacturerDisplayName?.Name %> - <%= car.Class %>
+      </p>
+
+      <!-- render image -->
+      <img
+        src="<%= car.imageUrl %>"
+        alt="<%= car.DisplayName?.English %> image"
+        onerror="this.src='/stylesheets/images/placeholder.jpg';"
+        style="max-width: 300px; border-radius: 8px;"
+      />
+    </li>
+  <% }) %>
+</ul>
+
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/cars">Browse Local Cars</a>
+      </div>
+    </div>
+  </body>
+</html>
