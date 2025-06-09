@@ -11,29 +11,66 @@
     <div class="main-container">
       <h1>GTA V Vehicles</h1>
 
-<ul class="vehicle-list">
-  <% cars.forEach(car => { %>
-    <li class="vehicle-card">
-      <h3 class="vehicle-name"><%= car.DisplayName?.English || car.DisplayName?.Name %></h3>
-      <p class="vehicle-details">
-        <%= car.ManufacturerDisplayName?.English || car.ManufacturerDisplayName?.Name %> - <%= car.Class %>
-      </p>
+      <div class="nav-links">
+        <a class="home-link" href="/">
+          <div class="home-link-text">Home</div>
+        </a>
 
-      <!-- render image -->
+        <a class="cars-index-link" href="/cars">
+          <div class="index-link-text">My Car Garage</div>
+        </a>
+      </div>
+
+      <!-- Filter by Vehicle Type -->
+      <form action="/gtav" method="GET" class="vehicle-filter-form">
+        <button type="submit" name="class" value="">All</button>
+        <button type="submit" name="class" value="SUPER">Super</button>
+        <button type="submit" name="class" value="SPORTS">Sports</button>
+        <button type="submit" name="class" value="MUSCLE">Muscle</button>
+        <button type="submit" name="class" value="MOTORCYCLE">Motorcycle</button>
+        <button type="submit" name="class" value="MILITARY">Military</button>
+        <button type="submit" name="class" value="HELICOPTER">Helicopter</button>
+        <button type="submit" name="class" value="SERVICE">Service</button>
+        <button type="submit" name="class" value="UTILITY">Utility</button>
+        <button type="submit" name="class" value="EMERGENCY">Emergency</button>
+      </form>
+
+      <!-- Vehicle Grid -->
+<ul class="vehicle-list">
+  <% cars.forEach(car => { 
+    const isSaved = savedNames.includes(car.Name);
+  %>
+  <li class="vehicle-card <%= isSaved ? 'saved' : '' %>">
+    <div class="vehicle-img-wrapper">
       <img
+        class="vehicle-img"
         src="<%= car.imageUrl %>"
         alt="<%= car.DisplayName?.English %> image"
         onerror="this.src='/stylesheets/images/placeholder.jpg';"
-        style="max-width: 300px; border-radius: 8px;"
       />
-    </li>
+    </div>
+    <div class="vehicle-info">
+      <h3 class="vehicle-name"><%= car.DisplayName?.English || car.DisplayName?.Name %></h3>
+      <p class="vehicle-details">
+        <%= car.ManufacturerDisplayName?.English || car.ManufacturerDisplayName?.Name %> — <%= car.Class %>
+      </p>
+
+      <% if (isSaved) { %>
+        <div class="saved-badge">Saved</div>
+      <% } else { %>
+        <form action="/cars/save" method="POST">
+          <input type="hidden" name="Name" value="<%= car.Name %>">
+          <input type="hidden" name="DisplayName" value="<%= car.DisplayName?.English || car.DisplayName?.Name %>">
+          <input type="hidden" name="Manufacturer" value="<%= car.ManufacturerDisplayName?.English || car.ManufacturerDisplayName?.Name %>">
+          <input type="hidden" name="Class" value="<%= car.Class %>">
+          <input type="hidden" name="imageUrl" value="<%= car.imageUrl %>">
+          <button type="submit"class="save-car-btn">Save to My Garage</button>
+        </form>
+      <% } %>
+    </div>
+  </li>
   <% }) %>
 </ul>
-
-      <div class="nav-links">
-        <a href="/">Home</a>
-        <a href="/cars">Browse Local Cars</a>
-      </div>
     </div>
   </body>
 </html>

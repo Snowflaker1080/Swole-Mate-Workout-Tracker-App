@@ -11,7 +11,7 @@
     <div class="new-car-container">
       <h1 class="gta-title">Create a New Car!</h1>
 
-      <form class="gta-form" action="/cars" method="POST">
+      <form class="car-entry-form" action="/cars" method="POST">
         <label for="name">Car Name:</label>
         <input type="text" name="name" id="name" required />
 
@@ -25,6 +25,11 @@
 
       <div class="nav-links">
         <a class="back-link" href="/cars/">← Back to Cars</a>
+
+        <!-- Browse GTAV Cars Link -->
+        <a class="cars-index-link" href="/gtav/vehicles">
+          <div class="index-link-text">Browse GTA V Vehicles</div>
+        </a>
         <a class="home-link" href="/">
           <div class="home-link-text">Home</div>
         </a>

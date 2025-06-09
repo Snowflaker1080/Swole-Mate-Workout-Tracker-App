@@ -9,47 +9,55 @@
 
   <body>
     <div class="main-container">
+      <!-- All Cars Section -->
       <h1>All Cars</h1>
 
-      <!-- Car List -->
       <ul>
         <% cars.forEach(car => { %>
-          <li>
-            <a class="car-cards" href="/cars/<%= car._id %>">
-              <div class="car-name"><%= car.name %></div>
-            </a>
-          </li>
+          <% if (car.name) { %>
+            <li>
+              <a class="car-cards" href="/cars/<%= car._id %>">
+                <div class="car-name"><%= car.name %></div>
+              </a>
+            </li>
+          <% } %>
         <% }) %>
       </ul>
 
+      <!-- GTA Vehicles Section -->
       <h1>GTA Vehicles</h1>
 
-<ul>
-  <% cars.forEach(car => { %>
-    <li>
-      <h3><%= car.displayName %></h3>
-      <p><%= car.manufacturer %> - <%= car.class %></p>
-      <img
-        src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
-        alt="<%= car.displayName %> image"
-        onerror="this.src='/stylesheets/images/placeholder.jpg';"
-        style="max-width: 300px;"
-      />
-    </li>
-  <% }) %>
-</ul>
+      <ul>
+        <% cars.forEach(car => { %>
+          <% if (car.displayName) { %>
+            <li>
+              <h3><%= car.displayName %></h3>
+              <p><%= car.manufacturer %> - <%= car.class %></p>
+              <img
+                src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
+                alt="<%= car.displayName %> image"
+                onerror="this.src='/stylesheets/images/placeholder.jpg';"
+                style="max-width: 300px"
+              />
+            </li>
+          <% } %>
+        <% }) %>
+      </ul>
 
-        <!-- Car & Home Links -->
+      <!-- Car & Home Links -->
       <div class="nav-links">
         <a class="add-car" href="/cars/new">Add Car</a>
 
-        <a href="/gtav/vehicles">View GTA V Vehicles</a>
-        
+        <!-- Browse GTAV Cars Link -->
+        <a class="cars-index-link" href="/gtav/vehicles">
+          <div class="index-link-text">Browse GTA V Vehicles</div>
+        </a>
+
         <a class="home-link" href="/">
           <div class="home-link-text">Home</div>
         </a>
+        
       </div>
-
     </div>
   </body>
 </html>

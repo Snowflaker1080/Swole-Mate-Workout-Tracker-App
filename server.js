@@ -15,8 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method")); // new
 app.use(morgan("dev")); //new - Morgan terminal logs
 app.use(express.static(path.join(__dirname, "public")));
-app.set("view engine", "ejs"); // set the view engine to ejs
 
+//view engines
+app.set("view engine", "ejs"); // set the view engine to ejs
+app.set('views', path.join(__dirname, 'views'))
+
+//View API GTAV vehicles
 app.get("/gtav/vehicles", async (req, res) => {
   try {
     const response = await fetch('https://gtav-vehicle-database.vercel.app/api/vehicles');
@@ -24,15 +28,70 @@ app.get("/gtav/vehicles", async (req, res) => {
 
     // Attach GitHub-hosted image URLs to each car
     cars.forEach(car => {
-      car.imageUrl = `https://raw.githubusercontent.com/MericcaN41/gta5carimages/main/images/${car.Name.toLowerCase()}.png`;;
-    console.log(`${car.Name}: ${car.imageUrl}`);
+      car.imageUrl = `https://raw.githubusercontent.com/MericcaN41/gta5carimages/main/images/${car.Name.toLowerCase()}.png`;
+      console.log(`${car.Name}: ${car.imageUrl}`);
+    }); 
+
+    console.log('Fetched GTA cars:', cars.length);
+    res.render("cars/gtav-index.ejs", { cars, savedNames: [] }); // add savedNames to avoid crash
+  } catch (err) {
+    console.error("GTAV API error:", err);
+    res.status(500).send("Error loading GTA V cars.");
+  }
+});
+
+app.get('/gtav', async (req, res) => {
+  const { class: selectedClass } = req.query;
+
+  try {
+    // 1. Fetch all vehicles from the API
+    const response = await fetch('https://gtav-vehicle-database.vercel.app/api/vehicles');
+    let cars = await response.json();
+
+    // 2. Add image URLs
+    cars.forEach(car => {
+      car.imageUrl = `https://raw.githubusercontent.com/MericcaN41/gta5carimages/main/images/${car.Name.toLowerCase()}.png`;
     });
 
-    console.log('✅ Fetched GTA cars:', cars.length);
-    res.render("cars/gtav-index.ejs", { cars });
+    // 3. Filter if class is selected
+    if (selectedClass) {
+      cars = cars.filter(car => car.Class?.toLowerCase() === selectedClass.toLowerCase());
+    }
+
+    // 4. Fetch saved cars from MongoDB
+    const savedCars = await Car.find({});
+    const savedNames = savedCars.map(car => car.Name); // Array of saved vehicle names
+
+    res.render('cars/gtav-index.ejs', { cars, savedNames });
   } catch (err) {
-    console.error("❌ GTAV API error:", err);
-    res.status(500).send("Error loading GTA V cars.");
+    console.error('Error loading GTA V cars:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+app.post('/cars/save', async (req, res) => {
+  const { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
+
+  try {
+    const existingCar = await Car.findOne({ Name });
+
+    if (!existingCar) {
+      await Car.create({
+        Name,
+        DisplayName,
+        Manufacturer,
+        Class,
+        imageUrl
+      });
+      console.log(`✅ Saved ${Name} to your garage.`);
+    } else {
+      console.log(`ℹ️ ${Name} is already in the database.`);
+    }
+
+    res.redirect('/cars');
+  } catch (err) {
+    console.error('Error saving car:', err);
+    res.status(500).send('Failed to save vehicle.');
   }
 });
 
@@ -42,11 +101,15 @@ app.get("/", async (req, res) => {
 });
 
 // GET /cars...(READ) Local MongoDEB Cars Index
-app.get("/cars", async (req, res) => {
-  const allCars = await Car.find();
-  console.log(allCars); // log the cars!
-  res.render("cars/index.ejs", { cars: allCars });
-});
+app.get('/cars', async (req, res) => {
+  try {
+    const cars = await Car.find({})
+    res.render('cars/index', { cars })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error retrieving cars from the database')
+  }
+})
 
 // GET /cars/new...(READ)..NEW CAR FORM
 app.get("/cars/new", (req, res) => {
