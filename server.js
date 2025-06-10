@@ -72,20 +72,19 @@ app.get('/gtav', async (req, res) => {
 app.post('/cars/save', async (req, res) => {
   const { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
 
+  if (!Name) {
+    console.error("Vehicle has no Name — cannot save.");
+    return res.status(400).send("Vehicle must have a Name.");
+  }
+
   try {
     const existingCar = await Car.findOne({ Name });
 
     if (!existingCar) {
-      await Car.create({
-        Name,
-        DisplayName,
-        Manufacturer,
-        Class,
-        imageUrl
-      });
-      console.log(`✅ Saved ${Name} to your garage.`);
+      await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl });
+      console.log(`Saved ${Name} to your garage.`);
     } else {
-      console.log(`ℹ️ ${Name} is already in the database.`);
+      console.log(`ℹ${Name} already exists in the database.`);
     }
 
     res.redirect('/cars');
@@ -125,24 +124,45 @@ app.get("/cars/:carId", async (req, res) => {
 
 // GET /cars/:carId/edit...(READ-EDIT)...EDIT CAR FORM
 app.get("/cars/:carId/edit", async (req, res) => {
-  const foundCar = await Car.findById(req.params.carId);
-  res.render("cars/edit.ejs", { car: foundCar });
+  try {
+    const foundCar = await Car.findById(req.params.carId);
+
+    if (!foundCar) {
+      return res.status(404).send("Car not found.");
+    }
+
+    res.render("cars/edit.ejs", { car: foundCar });
+  } catch (err) {
+    console.error("Error finding car:", err);
+    res.status(500).send("Server error");
+  }
 });
 
 // PUT /cars/:carId...(UPDATE)...UPDATE CAR DETAILS
 app.put("/cars/:carId", async (req, res) => {
-  // Handle the 'typeOfCar' checkbox data
-  if (req.body.typeOfCar === "on") {
-    req.body.typeOfCar = true;
-  } else {
-    req.body.typeOfCar = false;
+  try {
+    // Normalise checkbox value
+    req.body.typeOfCar = req.body.typeOfCar === "on";
+
+    // Update only the fields expected in your schema
+    const updatedData = {
+      Name: req.body.Name,
+      DisplayName: req.body.DisplayName,
+      Manufacturer: req.body.Manufacturer,
+      Class: req.body.Class,
+      imageUrl: req.body.imageUrl,
+      typeOfCar: req.body.typeOfCar
+    };
+
+    // Update the car in the database
+    await Car.findByIdAndUpdate(req.params.carId, updatedData, { runValidators: true });
+
+    // Redirect to the car's show page
+    res.redirect(`/cars/${req.params.carId}`);
+  } catch (err) {
+    console.error("Error updating car:", err);
+    res.status(500).send("Failed to update car.");
   }
-
-  // Update the car in the database
-  await Car.findByIdAndUpdate(req.params.carId, req.body);
-
-  // Redirect to the car's show page to see the updates
-  res.redirect(`/cars/${req.params.carId}`);
 });
 
 // POST /cars...(CREATE)...CREATE NEW CAR

@@ -3,37 +3,72 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <link rel="stylesheet" href="/stylesheets/style.css" />
+    <title>Edit <%= car.Name %></title>
   </head>
 
   <body>
-    <!-- header -->
-    <h1>Edit <%= car.name %></h1>
+    <div class="main-container">
+      <!-- Page Header -->
+      <h1>Edit <%= car.Name %></h1>
 
-    <form action="/cars/<%=car._id%>?_method=PUT" method="POST">
-      <label for="name">Name:</label>
-      <input type="text" name="name" value="<%= car.name %>" />
+      <!-- Image Display -->
+      <% if (car.imageUrl) { %>
+        <img
+          src="<%= car.imageUrl %>"
+          alt="<%= car.Name %> image"
+          class="vehicle-img"
+          style="max-width: 300px; display: block; margin: 0 auto;"
+        />
+      <% } %>
 
-      <div class="checkbox-div">
-        <label for="typeOfCar">Type of Car?</label>
-        <input
-          type="checkbox"
-          name="typeOfCar"
-          <%
-          if(car.typeOfCar){%>checked<% } %> >
+      <!-- Edit Car Form -->
+      <form action="/cars/<%= car._id %>?_method=PUT" method="POST">
+        <!-- Car Name -->
+        <label for="Name">Name:</label>
+        <input type="text" id="Name" name="Name" value="<%= car.Name %>" required />
+
+        <!-- Display Name -->
+        <label for="DisplayName">Display Name:</label>
+        <input type="text" id="DisplayName" name="DisplayName" value="<%= car.DisplayName || '' %>" />
+
+        <!-- Manufacturer -->
+        <label for="Manufacturer">Manufacturer:</label>
+        <input type="text" id="Manufacturer" name="Manufacturer" value="<%= car.Manufacturer || '' %>" />
+
+        <!-- Class -->
+        <label for="Class">Class:</label>
+        <input type="text" id="Class" name="Class" value="<%= car.Class || '' %>" />
+
+        <!-- typeOfCar checkbox -->
+        <div class="checkbox-div">
+          <label for="typeOfCar">Type of Car?</label>
+          <input
+            type="checkbox"
+            id="typeOfCar"
+            name="typeOfCar"
+            <%= car.typeOfCar ? 'checked' : '' %>
+          />
+        </div>
+
+        <!-- Image URL -->
+        <label for="imageUrl">Image URL:</label>
+        <input type="text" id="imageUrl" name="imageUrl" value="<%= car.imageUrl || '' %>" />
+
+        <!-- Submit Button -->
+        <button type="submit" class="shared-btn"></button>>Update Car</button>
+      </form>
+
+      <!-- Navigation Links -->
+      <div class="nav-links">
+        <a class="cars-index-link" href="/cars">
+          <div class="index-link-text">Browse Cars</div>
+        </a>
+
+        <a class="home-link" href="/">
+          <div class="home-link-text">Home</div>
+        </a>
       </div>
-
-      <!-- button -->
-      <button type="submit">Update Car</button>
-    </form>
-
-    <a class="cars-index-link" href="/cars">
-      <div class="index-link-text">Browse Cars</div>
-    </a>
-
-    <a class="home-link" href="/">
-      <div class="home-link-text">Home</div>
-    </a>
+    </div>
   </body>
 </html>

@@ -60,10 +60,10 @@ h1 {
 
 /* Browse Cars Link Button */
 
-.cars-index-link {
+.cars-index-link, .home-link-text {
   text-decoration: none;
 }
- .index-link-text {
+ .index-link-text, .home-link-text {
    text-decoration: none;
    background-color: #f47b5b;
    color: white;
@@ -401,12 +401,13 @@ button {
 .back-link,
 .home-link-text {
   text-decoration: none;
-  background-color: #3f6a51;
+  background-color: #f47b5b;
   color: white;
-  padding: 10px 20px;
-  border-radius: 20px;
+  font-size: 1.4em;
+  padding: 5px 15px;
+  margin: 15px;
+  border-radius: 25px;
   font-weight: bold;
-  font-size: 1.2em;
   text-align: center;
   box-shadow: 0 4px #ffbd59;
   transition: background-color 0.3s ease;
@@ -414,7 +415,8 @@ button {
 
 .back-link:hover,
 .home-link-text:hover {
-  background-color: #769642;
+  background-color: #ffbd59;
+  box-shadow: 0 5px #f47b5b;
 }
 
 .delete-button {
@@ -463,8 +465,10 @@ button {
 /* Vehicle list layout */
 .vehicle-list {
   display: grid;
+  flex-wrap: wrap;
+  justify-content: center;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
+  gap: 1rem;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -510,19 +514,20 @@ button {
 
 /* Each vehicle card */
 .vehicle-card {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
 
 .vehicle-card:hover {
-  transform: translateY(-4px);
+  transform: scale(1.03);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
@@ -548,15 +553,15 @@ button {
 
 /* Vehicle info text */
 .vehicle-info {
-  padding: 12px;
+  padding: 1rem;
   text-align: center;
 }
 
 .vehicle-name {
-  font-size: 16px;
+  font-size: 1.2rem;
   font-weight: 600;
   color: #222;
-  margin-bottom: 6px;
+  margin: 0 0 0.5rem 0;
 }
 
 .vehicle-details {
@@ -614,3 +619,33 @@ button {
   background-color: #d86e4f;
   box-shadow: 0 2px #ffbd59;
   transform: translateY(1px);
+}
+
+.shared-btn {
+  font-family: "DM Sans", sans-serif;
+  font-size: 1.4em;
+  width: 10em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 5px 15px;
+  margin: 15px auto;
+  border-radius: 25px;
+  display: block;
+  background-color: #f47b5b;
+  box-shadow: 0 5px #ffbd59;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.shared-btn:hover {
+  background-color: #ffbd59;
+  color: #111;
+  box-shadow: 0 8px #f47b5b;
+  transform: translateY(-2px);
+}
+
+.shared-btn:active {
+  background-color: #d86e4f;
+  box-shadow: 0 4px #ffbd59;
+  transform: translateY(2px);
+}
