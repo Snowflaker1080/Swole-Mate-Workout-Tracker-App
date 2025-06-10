@@ -4,54 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <title>Car Show Page</title> 
+    <title><%= car.Name || 'Vehicle Details' %></title>
   </head>
 
   <body>
-<div class="car-details">
-    <h1><%= car.name %></h1>
-          <% if (car.typeOfCar) { %>
-    <p>This is a type of car!</p>
-  <% } else { %>
-    <p>This is not a type of car!</p>
-  <% } %>
+    <div class="main-container">
+      <!-- Page Header -->
+      <h1><%= car.DisplayName || car.Name || 'Unknown Vehicle' %></h1>
 
+      <!-- Vehicle Image -->
+      <div class="vehicle-img-wrapper">
+        <img
+          src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
+          alt="<%= car.DisplayName || car.Name %> image"
+          class="vehicle-img"
+          onerror="this.src='/stylesheets/images/placeholder.jpg';"
+          style="max-width: 300px; display: block; margin: 0 auto;"
+        />
+      </div>
 
-  <!-- Delete Button -->
-   <div class="car-actions">
-<form 
-  class="delete-form"
-  action="/cars/<%=car._id%>?_method=DELETE" 
-  method="POST">
+      <!-- Vehicle Details Section -->
+      <div class="vehicle-info-text" style="text-align: center; margin: 20px 0;">
+        <p><strong>Name:</strong> <%= car.Name || 'Unknown' %></p>
+        <p><strong>Display Name:</strong> <%= car.DisplayName || 'Unknown' %></p>
+        <p><strong>Manufacturer:</strong> <%= car.Manufacturer || 'Unknown' %></p>
+        <p><strong>Class:</strong> <%= car.Class || 'Unknown' %></p>
+      </div>
 
-  <button 
-  class="delete-button" 
-  type="submit">
-  Delete <%= car.name %>
-  </button>
-</form>
-</div>
+      <!-- Button Container -->
+      <div class="button-container" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+        <!-- Edit Link -->
+        <a href="/cars/<%= car._id %>/edit" class="shared-btn">Edit Vehicle</a>
 
-<!-- Edit Page Link -->
-  <a class="edit-link" href="/cars/<%= car._id %>/edit">
-    <div class="edit-text">Edit <%= car.name %></div>
-  </a>
+        <!-- Delete Form -->
+        <form action="/cars/<%= car._id %>?_method=DELETE" method="POST">
+          <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
+        </form>
+      </div>
 
-<!-- Browse Cars Link -->
-  <a class="cars-index-link" href="/cars"> 
-    <div class="index-link-text">Browse Cars</div>
-  </a>
+      <!-- Navigation Links -->
+      <div class="nav-links" style="margin-top: 30px;">
+        <a class="cars-index-link" href="/cars">
+          <div class="index-link-text">My Garage</div>
+        </a>
 
-  <!-- Browse GTAV Cars Link -->
-  <a class="cars-index-link" href="/gtav/vehicles">
-  <div class="index-link-text">Browse GTA V Vehicles</div>
-</a>
-
-<!-- Home Page Link -->
-  <a class="home-link" href="/">
-    <div class="home-link-text">Home</div>
-  </a>
-    
-</body>
-
+        <a class="home-link" href="/">
+          <div class="home-link-text">Home</div>
+        </a>
+      </div>
+    </div>
+  </body>
 </html>

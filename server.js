@@ -178,7 +178,6 @@ app.post("/cars", async (req, res) => {
 
 // DELETE /cars/:carId...(DELETE)...DELETE CAR
 app.delete("/cars/:carId", async (req, res) => {
-
   await Car.findByIdAndDelete(req.params.carId);
   res.redirect("/cars");
 });

@@ -55,14 +55,17 @@
         <label for="imageUrl">Image URL:</label>
         <input type="text" id="imageUrl" name="imageUrl" value="<%= car.imageUrl || '' %>" />
 
+        <!-- Delete Button -->
+        <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
+
         <!-- Submit Button -->
-        <button type="submit" class="shared-btn"></button>>Update Car</button>
+        <button type="submit" class="shared-btn">Update Car</button>
       </form>
 
       <!-- Navigation Links -->
       <div class="nav-links">
         <a class="cars-index-link" href="/cars">
-          <div class="index-link-text">Browse Cars</div>
+          <div class="index-link-text">My Garage</div>
         </a>
 
         <a class="home-link" href="/">
