@@ -9,25 +9,54 @@
 
   <body>
     <div class="new-car-container">
-      <h1 class="gta-title">Create a New Car!</h1>
+      <h1 class="gta-title">Create a New Vehicle!</h1>
 
       <form class="car-entry-form" action="/cars" method="POST">
-        <label for="Name">Car Name:</label>
-        <input type="text" name="Name" id="Name" required />
+        <label for="VehicleName">Vehicle Name:</label>
+        <input type="text" name="Vehicle Name" id="Vehicle Name" required />
 
-        <div class="checkbox-div">
-          <label for="typeOfCar">Type of Car?</label>
-          <input type="checkbox" name="typeOfCar" id="typeOfCar" />
-        </div>
+        <label for="DisplayName">Display Name:</label>
+        <input type="text" name="Display Name" id="Display Name" required />
 
-        <button class="submit-btn" type="submit">Add Car</button>
+        <label for="Name">Manufacturer:</label>
+        <input type="text" name="Manufacturer" id="Manufacturer" required />
+
+        <label for="Name">Class:</label>
+        <select name="Class" id="Class" required />
+
+        <button class="submit-btn" type="submit">Add Vehicle</button>
+          <option value="" disabled selected>Select a Class</option>
+          <option value="Super">Super</option>
+          <option value="Sports">Sports</option>
+          <option value="Muscle">Muscle</option>
+          <option value="SUV">SUV</option>
+          <option value="Sedan">Sedan</option>
+          <option value="Coupe">Coupe</option>
+          <option value="Motorcycle">Motorcycle</option>
+          <option value="Off-Road">Off-Road</option>
+          <option value="Compact">Compact</option>
+          <option value="Van">Van</option>
+          <option value="Military">Military</option>
+          <option value="Utility">Utility</option>
+          <option value="Emergency">Emergency</option>
+        </select>
+
+         <label for="imageUrl">Image URL:</label>
+        <input 
+        type="url" 
+        name="imageUrl" 
+        id="imageUrl" 
+        placeholder="https://example.com/image.png" 
+        style="width:100%; max-width: 600px;"/>
+
+        <button class="submit-btn" type="submit">Add Vehicle</button>
       </form>
 
       <div class="nav-links">
-        <a class="back-link" href="/cars/">← Back to My Garage</a>
+        <a class="back-link" href="/cars/">My Garage</a>
 
         <!-- Browse GTAV Cars Link -->
-        <a class="cars-index-link" href="/gtav/vehicles">
+        <a class="cars-index-link" href="/gtav">
           <div class="index-link-text">Browse GTA V Vehicles</div>
         </a>
         <a class="home-link" href="/">

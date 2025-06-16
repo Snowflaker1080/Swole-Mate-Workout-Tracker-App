@@ -16,7 +16,7 @@
         <% cars.forEach(car => { %>
           <% if (car.DisplayName && car.Name) { %>
             <li class="vehicle-card">
-              <a href="/cars/<%= car._id %>/edit">
+              <a href="/cars/<%= car._id %>">
                 <div class="vehicle-img-wrapper">
                   <img
                     class="vehicle-img"
@@ -26,10 +26,16 @@
                   />
                 </div>
                 <div class="vehicle-info">
-                  <h3 class="vehicle-name"><%= car.DisplayName %></h3>
-                  <p class="vehicle-details">
-                    <%= car.Manufacturer || 'Unknown' %> — <%= car.Class || 'N/A' %>
+                  <h2 class="vehicle-name"><%= car.DisplayName %></h2>
+
+                  <p class="vehicle-manufacturer">
+                    Manufacturer: <%= car.Manufacturer || 'Unknown' %> 
                   </p>
+
+                    <p class="vehicle-class"> 
+                      Class: <%= car.Class || 'N/A' %>
+                  </p>
+
                 </div>
               </a>
             </li>
@@ -38,13 +44,16 @@
       </ul>
 
       <!-- Navigation Links -->
+        <!-- Add Car Link -->
       <div class="nav-links">
         <a class="home-link-text" href="/cars/new">Add Car</a>
 
-        <a class="cars-index-link" href="/gtav/vehicles">
+        <!-- Browse GTA V Vehicles Link -->
+        <a class="cars-index-link" href="/gtav">
           <div class="home-link-text">Browse GTA V Vehicles</div>
         </a>
 
+        <!-- Home Link -->
         <a class="nav-link" href="/">
           <div class="home-link-text">Home</div>
         </a>

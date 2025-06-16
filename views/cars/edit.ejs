@@ -40,27 +40,18 @@
         <label for="Class">Class:</label>
         <input type="text" id="Class" name="Class" value="<%= car.Class || '' %>" />
 
-        <!-- typeOfCar checkbox -->
-        <div class="checkbox-div">
-          <label for="typeOfCar">Type of Car?</label>
-          <input
-            type="checkbox"
-            id="typeOfCar"
-            name="typeOfCar"
-            <%= car.typeOfCar ? 'checked' : '' %>
-          />
-        </div>
-
         <!-- Image URL -->
         <label for="imageUrl">Image URL:</label>
         <input type="text" id="imageUrl" name="imageUrl" value="<%= car.imageUrl || '' %>" />
 
-        <!-- Delete Button -->
-        <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
-
         <!-- Submit Button -->
         <button type="submit" class="shared-btn">Update Car</button>
       </form>
+
+<form action="/cars/<%= car._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+  <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
+</form>
+
 
       <!-- Navigation Links -->
       <div class="nav-links">
