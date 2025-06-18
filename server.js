@@ -47,18 +47,23 @@ app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false, // not saving sessions for guests to prevent db clutter
     store: MongoStore.create({
       mongoUrl: process.env.MONGODB_URI,
     }),
   })
 );
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  next();
+});
+
 // Controllers
 const authController = require("./controllers/auth.js"); // auth router holds all the auth endpoints
 app.use("/auth", authController);
 const carController = require("./controllers/cars");
-app.use("/cars", isSignedIn, carController); // Protect all /cars routes
+app.use("/cars", carController); // Protect all /cars routes
 const userRoutes = require("./controllers/users");
 app.use("/users", userRoutes);
 
@@ -100,7 +105,7 @@ app.get("/gtav", async (req, res) => {
   }
 });
 
-app.post("/cars/save", async (req, res) => {
+app.post("/cars/save", isSignedIn, async (req, res) => {
   let { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
 
   console.log("REQ.BODY:", req.body);
@@ -126,7 +131,7 @@ app.post("/cars/save", async (req, res) => {
     }
 
     if (!existingCar) {
-      await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl });
+      await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl, user: req.session.user._id });
       console.log(`Saved ${Name} to your garage.`);
     } else {
       console.log(`ℹ${Name} already exists in the database.`);

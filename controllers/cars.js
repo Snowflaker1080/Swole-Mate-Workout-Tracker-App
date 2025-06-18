@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Car = require("../models/car");
+const isSignedIn = require("../middleware/is-signed-in");
 
 const fetch = require('node-fetch');
 
@@ -21,9 +22,9 @@ const getCarImageFromGoogle = async (displayName) => {
 };
 
 // INDEX – GET /cars — show all cars
-router.get("/", async (req, res) => {
+router.get("/", isSignedIn,  async (req, res) => {
   try {
-    const cars = await Car.find({});
+    const cars = await Car.find({ user: req.session.user._id });
     res.render("cars/index", { cars });
   } catch (err) {
     console.error("Error fetching cars:", err);
@@ -61,7 +62,7 @@ router.get("/image", async (req, res) => {
 
 
 // CREATE – POST /cars — add new car to DB
-router.post("/", async (req, res) => {
+router.post("/", isSignedIn, async (req, res) => {
   let { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
 
   try {
@@ -76,8 +77,8 @@ router.post("/", async (req, res) => {
     }
 
 
-    await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl });
-    console.log(`Custom car "${DisplayName}" added.`);
+    await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl, user: req.session.user._id, });
+   console.log(`Custom car "${DisplayName}" added by ${req.session.user.username}`);
     res.redirect("/cars");
   } catch (err) {
     console.error("Failed to save custom car:", err);
@@ -89,6 +90,10 @@ router.post("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
+    if (!car || car.user.toString() !== req.session.user._id) {
+      return res.status(403).send("Access denied");
+    }
+
     res.render("cars/show", { car });
   } catch (err) {
     console.error("Error fetching car:", err);
@@ -97,9 +102,13 @@ router.get("/:id", async (req, res) => {
 });
 
 // EDIT – GET /cars/:id/edit — form to edit a car
-router.get("/:id/edit", async (req, res) => {
+router.get("/:id/edit", isSignedIn, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
+     if (!car || car.user.toString() !== req.session.user._id) {
+      return res.status(403).send("Access denied.");
+    }
+
     res.render("cars/edit", { car });
   } catch (err) {
     console.error("Error loading edit form:", err);
@@ -108,7 +117,7 @@ router.get("/:id/edit", async (req, res) => {
 });
 
 // UPDATE – PUT /cars/:id — update car in DB
-router.put("/:id", async (req, res) => {
+router.put("/:id", isSignedIn, async (req, res) => {
   try {
     const updatedCar = {
       Name: req.body.Name,
@@ -127,11 +136,16 @@ router.put("/:id", async (req, res) => {
 });
 
 // DELETE – DELETE /cars/:id — remove a car
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isSignedIn, async (req, res) => {
   try {
+    const car = await Car.findById(req.params.id);
+     if (!car || car.user.toString() !== req.session.user._id) {
+      return res.status(403).send("Access denied.");
+    }
+
     await Car.findByIdAndDelete(req.params.id);
+    console.log(`Car deleted by ${req.session.user.username}: ID ${req.params.id}`);
     res.redirect("/cars");
-    console.log("DELETE request received for ID:", req.params.id);
   } catch (err) {
     console.error("Error deleting car:", err);
     res.status(500).send("Failed to delete car.");
