@@ -7,7 +7,13 @@
     <title>Cars App</title>
   </head>
   <body>
+
     <h1>GTA Car Collection!</h1>
+<% if (user) { %>
+  <p id="home-intro"><%= user.username %>'s GTA Garage </p>
+<% } else { %>
+  <p id="home-intro">your GTA Garage </p>
+  <% } %>
 
     <div class="image-container">
       <img
@@ -18,14 +24,36 @@
 
     <p>An app for collecting your favorite GTA cars.</p>
 
-    <!-- Browse Cars Link -->
-    <a class="cars-index-link" href="/cars">
-      <div class="index-link-text">My Garage</div>
-    </a>
+    <%if (user) {%>
+     <nav>
+      <ul>
+        <li>
+          <a class="cars-index-link" href="/cars">
+          <div class="index-link-text">My Garage</div></a>
+        </li>
 
-    <a class="cars-index-link" href="/gtav">
-  <div class="index-link-text">Browse GTA V Vehicles</div>
-</a>
+        <li>
+          <a class="cars-index-link" href="/gtav">
+          <div class="index-link-text">Browse GTA V Vehicles</div></a>
+      </li>
+        
+        <li> 
+          <a class="cars-index-link" href="/auth/sign-out">
+            <div class="index-link-text">Sign out</div></a> 
+        </li>
+
+      </ul>
+    </nav>
+  <% } else { %>
+     <p>
+      <a href="/auth/sign-up" class="auth-link">Create an Account</a> or 
+      <a href="/auth/sign-in" class="auth-link">Sign In</a> to view your garage</p> 
+    <% } %>
+  </div>
+ 
+  <% if (!user) { %>
+    <p><a href="/gtav"class="auth-link">View GTA V Vehicles as a Guest</a></p>
+  <% } %>
 
   </body>
 

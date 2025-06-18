@@ -2,6 +2,24 @@ const express = require("express");
 const router = express.Router();
 const Car = require("../models/car");
 
+const fetch = require('node-fetch');
+
+const getCarImageFromGoogle = async (displayName) => {
+  const apiKey = process.env.GOOGLE_API_KEY;
+  const cx = process.env.GOOGLE_CSE_ID;
+
+  try {
+    const query = encodeURIComponent(`${displayName} car`);
+    const url = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=${cx}&searchType=image&num=1&key=${apiKey}`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.items?.[0]?.link || null;
+  } catch (err) {
+    console.error("Google CSE image fetch failed:", err);
+    return null;
+  }
+};
+
 // INDEX – GET /cars — show all cars
 router.get("/", async (req, res) => {
   try {
@@ -14,26 +32,56 @@ router.get("/", async (req, res) => {
 });
 
 // NEW – GET /cars/new — form to create a new car
-router.get("/new", (req, res) => {
-  res.render("cars/new");
+router.get("/new", async (req, res) => {
+  const displayName = req.query.displayName || "";
+  let imageUrl = "";
+
+  if (displayName) {
+    imageUrl = await getCarImageFromGoogle(displayName);
+  }
+
+  res.render("cars/new", { imageUrl, displayName });
 });
+
+// GET Image
+router.get("/image", async (req, res) => {
+  const displayName = req.query.displayName;
+  if (!displayName) return res.json({ imageUrl: "" });
+
+  try {
+    const imageUrl =
+      (await getCarImageFromGoogle(displayName)) ||
+      "/stylesheets/images/placeholder.jpg";
+    res.json({ imageUrl });
+  } catch (err) {
+    console.error("Image preview fetch failed:", err);
+    res.status(500).json({ error: "Failed to fetch image" });
+  }
+});
+
 
 // CREATE – POST /cars — add new car to DB
 router.post("/", async (req, res) => {
-  try {
-    const carData = {
-      Name: req.body.Name,
-      DisplayName: req.body.DisplayName,
-      Manufacturer: req.body.Manufacturer,
-      Class: req.body.Class,
-      imageUrl: req.body.imageUrl,
-    };
+  let { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
 
-    await Car.create(carData);
+  try {
+    if (!Name || !DisplayName || !Manufacturer) {
+      return res.status(400).send("Missing required fields.");
+    }
+
+     if (!imageUrl && DisplayName) {
+      imageUrl =
+        (await getCarImageFromGoogle(DisplayName)) ||
+        "/stylesheets/images/placeholder.jpg";
+    }
+
+
+    await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl });
+    console.log(`Custom car "${DisplayName}" added.`);
     res.redirect("/cars");
   } catch (err) {
-    console.error("Error creating car:", err);
-    res.status(500).send("Internal Server Error");
+    console.error("Failed to save custom car:", err);
+    res.status(500).send("Failed to save car.");
   }
 });
 

@@ -16,9 +16,11 @@
           <div class="home-link-text">Home</div>
         </a>
 
-        <a class="cars-index-link" href="/cars">
-          <div class="index-link-text">My Car Garage</div>
-        </a>
+        
+      <% if (user) { %>
+        <a class="garage-link" href="/cars">My Car Garage</a>
+      <% } %>
+      
       </div>
 
       <!-- Filter by Vehicle Type -->
@@ -59,12 +61,16 @@
         <div class="saved-badge">Saved</div>
       <% } else { %>
         <form action="/cars/save" method="POST">
-          <input type="hidden" name="Name" value="<%= car.Name %>">
+          <% if (car.Name) { %>
+      <input type="hidden" name="Name" value="<%= car.Name %>">
+          <% } else { %>
+      <div style="color: red;">Missing Name field for this vehicle</div>
+          <% } %>
           <input type="hidden" name="DisplayName" value="<%= car.DisplayName?.English || car.DisplayName?.Name %>">
           <input type="hidden" name="Manufacturer" value="<%= car.ManufacturerDisplayName?.English || car.ManufacturerDisplayName?.Name %>">
           <input type="hidden" name="Class" value="<%= car.Class %>">
           <input type="hidden" name="imageUrl" value="<%= car.imageUrl %>">
-          <button type="submit"class="save-car-btn">Save to My Garage</button>
+          <button type="submit" class="save-car-btn">Save to My Garage</button>
         </form>
       <% } %>
     </div>

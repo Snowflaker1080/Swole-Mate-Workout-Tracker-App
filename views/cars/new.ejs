@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <title>Create a New Car</title>
+    <script defer src="/scripts/livePreview.js"></script>
+
+    <title>Create a New Vehicle</title>
   </head>
 
   <body>
@@ -12,42 +14,52 @@
       <h1 class="gta-title">Create a New Vehicle!</h1>
 
       <form class="car-entry-form" action="/cars" method="POST">
-        <label for="VehicleName">Vehicle Name:</label>
-        <input type="text" name="Vehicle Name" id="Vehicle Name" required />
+        <label for="Name">Vehicle Name:</label>
+        <input type="text" name="Name" id="Name" required />
 
         <label for="DisplayName">Display Name:</label>
-        <input type="text" name="Display Name" id="Display Name" required />
+        <input
+          type="text"
+          name="DisplayName"
+          id="DisplayName"
+          required
+          value="<%= displayName %>"
+        />
 
-        <label for="Name">Manufacturer:</label>
+        <!-- Regenerate Button -->
+        <button id="regeneratePreview" type="button" class="inline-button">
+          Regenerate Preview
+        </button>
+
+        <label for="Manufacturer">Manufacturer:</label>
         <input type="text" name="Manufacturer" id="Manufacturer" required />
 
-        <label for="Name">Class:</label>
-        <select name="Class" id="Class" required />
-
-        <button class="submit-btn" type="submit">Add Vehicle</button>
+        <label for="Class">Class:</label>
+        <select name="Class" id="Class" required>
           <option value="" disabled selected>Select a Class</option>
-          <option value="Super">Super</option>
-          <option value="Sports">Sports</option>
-          <option value="Muscle">Muscle</option>
+          <option value="Super">SUPER</option>
+          <option value="Sports">SPORTS</option>
+          <option value="Muscle">MUSCLE</option>
           <option value="SUV">SUV</option>
-          <option value="Sedan">Sedan</option>
-          <option value="Coupe">Coupe</option>
-          <option value="Motorcycle">Motorcycle</option>
-          <option value="Off-Road">Off-Road</option>
-          <option value="Compact">Compact</option>
-          <option value="Van">Van</option>
-          <option value="Military">Military</option>
-          <option value="Utility">Utility</option>
-          <option value="Emergency">Emergency</option>
+          <option value="Sedan">SEDAN</option>
+          <option value="Coupe">COUPE</option>
+          <option value="Motorcycle">MOTORCYCLE</option>
+          <option value="Off-Road">OFF-ROAD</option>
+          <option value="Compact">COMPACT</option>
+          <option value="Van">VAN</option>
+          <option value="Military">MILITARY</option>
+          <option value="Utility">UTILITY</option>
+          <option value="Emergency">EMERGENCY</option>
         </select>
 
-         <label for="imageUrl">Image URL:</label>
-        <input 
-        type="url" 
-        name="imageUrl" 
-        id="imageUrl" 
-        placeholder="https://example.com/image.png" 
-        style="width:100%; max-width: 600px;"/>
+        <img
+          id="imagePreview"
+          src="<%= imageUrl || '/stylesheets/images/placeholder.jpg' %>"
+          alt="Car Preview"
+          style="max-width: 300px; display: block; margin: 1rem auto"
+        />
+
+        <input type="url" name="imageUrl" id="imageUrl" hidden />
 
         <button class="submit-btn" type="submit">Add Vehicle</button>
       </form>
@@ -55,10 +67,10 @@
       <div class="nav-links">
         <a class="back-link" href="/cars/">My Garage</a>
 
-        <!-- Browse GTAV Cars Link -->
         <a class="cars-index-link" href="/gtav">
           <div class="index-link-text">Browse GTA V Vehicles</div>
         </a>
+
         <a class="home-link" href="/">
           <div class="home-link-text">Home</div>
         </a>
