@@ -3,6 +3,7 @@ dotenv.config();
 
 const Car = require("./models/car.js");
 const express = require("express");
+const fetch = require('node-fetch');
 const isSignedIn = require("./middleware/is-signed-in");
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
@@ -155,7 +156,7 @@ const db_url = process.env.MONGODB_URI;
 mongoose
   .connect(db_url, { dbName: "MyGarageAppUsers" })
   .then(() => {
-    console.log("Connected to MongoDB MyGarageAppUsers folder");
+    console.log("Connected to MongoDB MyGarageAppUsers Database");
   })
   .catch((err) => {
     console.error("MongoDB connection error:", err);

@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const Car = require("../models/car");
 const isSignedIn = require("../middleware/is-signed-in");
-
 const fetch = require('node-fetch');
 
 const getCarImageFromGoogle = async (displayName) => {
@@ -47,12 +46,17 @@ router.get("/new", async (req, res) => {
 // GET Image
 router.get("/image", async (req, res) => {
   const displayName = req.query.displayName;
+  console.log("Fetching image for:", displayName);
+
   if (!displayName) return res.json({ imageUrl: "" });
 
   try {
     const imageUrl =
       (await getCarImageFromGoogle(displayName)) ||
       "/stylesheets/images/placeholder.jpg";
+
+       console.log("Image URL returned:", imageUrl);
+
     res.json({ imageUrl });
   } catch (err) {
     console.error("Image preview fetch failed:", err);
