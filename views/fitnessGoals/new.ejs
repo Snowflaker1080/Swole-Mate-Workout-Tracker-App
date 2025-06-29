@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
+
+    <title>Create Your Fitness Goals</title>
+  </head>
+
+  <body>
+    <section class="section">
+      <div class="container">
+    
+<h1>Set or Update Your Fitness Goals</h1>
+
+<form action="/fitnessGoals" method="POST">
+  <fieldset>
+    <legend>Select the Goals You Want to Set or Update:</legend>
+
+    <%- include('../partials/goalSection', {
+      goalType: 'weight',
+      goalLabel: 'Weight Goal',
+      goalUnit: 'Weight (kg)',
+      step: 0.1,
+      existingGoals: existingGoals
+    }) %>
+
+    <%- include('../partials/goalSection', {
+      goalType: 'bodyFat',
+      goalLabel: 'Body Fat %',
+      goalUnit: 'Body Fat %',
+      step: 0.1,
+      existingGoals: existingGoals
+    }) %>
+
+    <%- include('../partials/goalSection', {
+      goalType: 'restingHR',
+      goalLabel: 'Resting Heart Rate',
+      goalUnit: 'HR (bpm)',
+      step: 1,
+      existingGoals: existingGoals
+    }) %>
+
+    <%- include('../partials/goalSection', {
+      goalType: 'vo2Max',
+      goalLabel: 'VO2 Max',
+      goalUnit: 'VO2 Max',
+      step: 0.1,
+      existingGoals: existingGoals
+    }) %>
+
+  </fieldset>
+
+  <button type="submit">Save Goals</button>
+</form>
+
+<script src="/scripts/workout.js"></script>
+
+      </div>
+    </section>
+  </body>
+</html>

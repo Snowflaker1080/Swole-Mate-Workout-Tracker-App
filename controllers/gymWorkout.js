@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const Car = require("../models/car");
+const gymWorkout = require("../models/gymWorkout");
 const isSignedIn = require("../middleware/is-signed-in");
 const fetch = require('node-fetch');
 
@@ -20,18 +20,18 @@ const getCarImageFromGoogle = async (displayName) => {
   }
 };
 
-// INDEX – GET /cars — show all cars
+// INDEX – GET /gymWorkout — show all gymWorkout
 router.get("/", isSignedIn,  async (req, res) => {
   try {
-    const cars = await Car.find({ user: req.session.user._id });
-    res.render("cars/index", { cars });
+    const gymWorkout = await Car.find({ user: req.session.user._id });
+    res.render("gymWorkout/index", { gymWorkout });
   } catch (err) {
-    console.error("Error fetching cars:", err);
+    console.error("Error fetching gymWorkout:", err);
     res.status(500).send("Internal Server Error");
   }
 });
 
-// NEW – GET /cars/new — form to create a new car
+// NEW – GET /gymWorkout/new — form to create a new car
 router.get("/new", async (req, res) => {
   const displayName = req.query.displayName || "";
   let imageUrl = "";
@@ -40,7 +40,7 @@ router.get("/new", async (req, res) => {
     imageUrl = await getCarImageFromGoogle(displayName);
   }
 
-  res.render("cars/new", { imageUrl, displayName });
+  res.render("gymWorkout/new", { imageUrl, displayName });
 });
 
 // GET Image
@@ -65,7 +65,7 @@ router.get("/image", async (req, res) => {
 });
 
 
-// CREATE – POST /cars — add new car to DB
+// CREATE – POST /gymWorkout — add new car to DB
 router.post("/", isSignedIn, async (req, res) => {
   let { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
 
@@ -83,14 +83,14 @@ router.post("/", isSignedIn, async (req, res) => {
 
     await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl, user: req.session.user._id, });
    console.log(`Custom car "${DisplayName}" added by ${req.session.user.username}`);
-    res.redirect("/cars");
+    res.redirect("/gymWorkout");
   } catch (err) {
     console.error("Failed to save custom car:", err);
     res.status(500).send("Failed to save car.");
   }
 });
 
-// SHOW – GET /cars/:id — show single car detail
+// SHOW – GET /gymWorkout/:id — show single car detail
 router.get("/:id", async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -98,14 +98,14 @@ router.get("/:id", async (req, res) => {
       return res.status(403).send("Access denied");
     }
 
-    res.render("cars/show", { car });
+    res.render("gymWorkout/show", { car });
   } catch (err) {
     console.error("Error fetching car:", err);
     res.status(404).send("Car not found");
   }
 });
 
-// EDIT – GET /cars/:id/edit — form to edit a car
+// EDIT – GET /gymWorkout/:id/edit — form to edit a car
 router.get("/:id/edit", isSignedIn, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -113,14 +113,14 @@ router.get("/:id/edit", isSignedIn, async (req, res) => {
       return res.status(403).send("Access denied.");
     }
 
-    res.render("cars/edit", { car });
+    res.render("gymWorkout/edit", { car });
   } catch (err) {
     console.error("Error loading edit form:", err);
     res.status(404).send("Car not found");
   }
 });
 
-// UPDATE – PUT /cars/:id — update car in DB
+// UPDATE – PUT /gymWorkout/:id — update car in DB
 router.put("/:id", isSignedIn, async (req, res) => {
   try {
     const updatedCar = {
@@ -132,14 +132,14 @@ router.put("/:id", isSignedIn, async (req, res) => {
     };
 
     await Car.findByIdAndUpdate(req.params.id, updatedCar);
-    res.redirect(`/cars/${req.params.id}`);
+    res.redirect(`/gymWorkout/${req.params.id}`);
   } catch (err) {
     console.error("Error updating car:", err);
     res.status(500).send("Update failed");
   }
 });
 
-// DELETE – DELETE /cars/:id — remove a car
+// DELETE – DELETE /gymWorkout/:id — remove a car
 router.delete("/:id", isSignedIn, async (req, res) => {
   try {
     const car = await Car.findById(req.params.id);
@@ -149,7 +149,7 @@ router.delete("/:id", isSignedIn, async (req, res) => {
 
     await Car.findByIdAndDelete(req.params.id);
     console.log(`Car deleted by ${req.session.user.username}: ID ${req.params.id}`);
-    res.redirect("/cars");
+    res.redirect("/gymWorkout");
   } catch (err) {
     console.error("Error deleting car:", err);
     res.status(500).send("Failed to delete car.");

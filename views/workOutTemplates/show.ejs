@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title><%= car.Name || 'Vehicle Details' %></title>
   </head>
@@ -19,12 +20,12 @@
           alt="<%= car.DisplayName || car.Name %> image"
           class="vehicle-img"
           onerror="this.src='/stylesheets/images/placeholder.jpg';"
-          style="max-width: 300px; display: block; margin: 0 auto;"
+          style="max-width: 300px; display: block; margin: 0 auto"
         />
       </div>
 
       <!-- Vehicle Details Section -->
-      <div class="vehicle-info-text" style="text-align: center; margin: 20px 0;">
+      <div class="vehicle-info-text" style="text-align: center; margin: 20px 0">
         <p><strong>Name:</strong> <%= car.Name || 'Unknown' %></p>
         <p><strong>Display Name:</strong> <%= car.DisplayName || 'Unknown' %></p>
         <p><strong>Manufacturer:</strong> <%= car.Manufacturer || 'Unknown' %></p>
@@ -32,18 +33,25 @@
       </div>
 
       <!-- Button Container -->
-      <div class="button-container" style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap;">
+      <div
+        class="button-container"
+        style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap"
+      >
         <!-- Edit Link -->
         <a href="/cars/<%= car._id %>/edit" class="shared-btn">Edit Vehicle</a>
 
         <!-- Delete Form -->
-        <form action="/cars/<%= car._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this vehicle?');">
+        <form
+          action="/cars/<%= car._id %>?_method=DELETE"
+          method="POST"
+          onsubmit="return confirm('Are you sure you want to delete this vehicle?');"
+        >
           <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
         </form>
       </div>
 
       <!-- Navigation Links -->
-      <div class="nav-links" style="margin-top: 30px;">
+      <div class="nav-links" style="margin-top: 30px">
         <a class="cars-index-link" href="/cars">
           <div class="index-link-text">My Garage</div>
         </a>

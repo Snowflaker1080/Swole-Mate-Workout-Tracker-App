@@ -3,38 +3,44 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <title>Cars App</title>
+    <title>Swole Mate App</title>
   </head>
   <body>
 
-    <h1>GTA Car Collection!</h1>
+    <h1>Swole Mate</h1>
 <% if (user) { %>
-  <p id="home-intro"><%= user.username %>'s GTA Garage </p>
+  <p id="home-intro"><%= user.username %>'s workout tracker </p>
 <% } else { %>
-  <p id="home-intro">your GTA Garage </p>
+  <p id="home-intro">Your fitness & workout tracker </p>
   <% } %>
 
     <div class="image-container">
       <img
-        src="/stylesheets/images/GTA-67-Shelby-GT500.jpg"
-        alt="GTA Shelby GT500"
+        src="/stylesheets/images/Swole Mate Logo.png"
+        alt="Swole Mate App Logo"
       />
     </div>
 
-    <p>An app for collecting your favorite GTA cars.</p>
+    <p>An app for tracking your workouts.</p>
 
     <%if (user) {%>
      <nav>
       <ul>
         <li>
-          <a class="cars-index-link" href="/cars">
-          <div class="index-link-text">My Garage</div></a>
+          <a class="cars-index-link" href="/gymWorkout">
+          <div class="index-link-text">My Gym Workouts</div></a>
         </li>
+
+           <li>
+          <a class="cars-index-link" href="/fitnessGoals">
+          <div class="index-link-text">Fitness Goals</div></a>
+      </li>
 
         <li>
           <a class="cars-index-link" href="/gtav">
-          <div class="index-link-text">Browse GTA V Vehicles</div></a>
+          <div class="index-link-text">Browse Workouts</div></a>
       </li>
         
         <li> 
@@ -47,18 +53,18 @@
   <% } else { %>
      <p>
       <a href="/auth/sign-up" class="auth-link">Create an Account</a> or 
-      <a href="/auth/sign-in" class="auth-link">Sign In</a> to view your garage</p> 
+      <a href="/auth/sign-in" class="auth-link">Sign In</a> to view your workout plan</p> 
     <% } %>
   </div>
  
   <% if (!user) { %>
-    <p><a href="/gtav"class="auth-link">View GTA V Vehicles as a Guest</a></p>
+    <p><a href="/gtav"class="auth-link">View workouts as a Guest</a></p>
   <% } %>
 
   </body>
 
   <footer>
     Images by
-    <a href="https://wallpapercat.com/gta-v-wallpapers">Wallpaper Cat</a>
+    <a href="https://wallpapercat.com/gta-v-wallpapers">Insert Image Attribution Here</a>
   </footer>
 </html>

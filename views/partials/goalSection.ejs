@@ -1,0 +1,67 @@
+<% const goal = existingGoals[goalType]; %>
+
+<div class="field">
+  <label class="checkbox">
+    <input
+      type="checkbox"
+      name="selectedGoals"
+      value="<%= goalType %>"
+      class="goal-toggle"
+      data-target="<%= goalType %>Fields"
+      <%= goal ? 'checked' : '' %>
+    >
+    <strong><%= goalLabel %></strong>
+  </label>
+</div>
+
+<div id="<%= goalType %>Fields" class="box <%= goal ? '' : 'is-hidden' %>">
+  <div class="field">
+    <label class="label">Start <%= goalUnit %></label>
+    <div class="control">
+      <input
+        class="input"
+        type="number"
+        name="<%= goalType %>[startValue]"
+        step="<%= step %>"
+        value="<%= goal ? goal.startValue : '' %>"
+      >
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Target <%= goalUnit %></label>
+    <div class="control">
+      <input
+        class="input"
+        type="number"
+        name="<%= goalType %>[targetValue]"
+        step="<%= step %>"
+        value="<%= goal ? goal.targetValue : '' %>"
+      >
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Start Date</label>
+    <div class="control">
+      <input
+        class="input"
+        type="date"
+        name="<%= goalType %>[startDate]"
+        value="<%= goal && goal.startDate ? goal.startDate.toISOString().split('T')[0] : '' %>"
+      >
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Target Date</label>
+    <div class="control">
+      <input
+        class="input"
+        type="date"
+        name="<%= goalType %>[targetDate]"
+        value="<%= goal && goal.targetDate ? goal.targetDate.toISOString().split('T')[0] : '' %>"
+      >
+    </div>
+  </div>
+</div>
