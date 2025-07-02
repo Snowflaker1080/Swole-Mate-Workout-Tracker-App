@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
 
-    <title>Edit Gym Workout</title>
-</head>
+    <title>Edit Workout</title>
+  </head>
 
-<body>
-     <section class="section">
-    <div class="container">
-      <h1 class="title">
-        Edit Gym Workout
-      </h1>
-      <p class="subtitle">
-        My first website with <strong>Bulma</strong>!
-      </p>
-    </div>
-  </section> 
-</body>
-
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1>Edit Workout</h1>
+        <form action="/gymWorkout/<%= workout._id %>" method="POST">
+          <input type="text" name="name" value="<%= workout.name %>" required />
+          <input type="text" name="bodyPart" value="<%= workout.bodyPart %>" />
+          <input type="text" name="equipment" value="<%= workout.equipment %>" />
+          <textarea name="instructions"><%= workout.instructions %></textarea>
+          <input type="url" name="image" value="<%= workout.image %>" />
+          <button type="submit">Update Workout</button>
+        </form>
+      </div>
+    </section>
+  </body>
 </html>

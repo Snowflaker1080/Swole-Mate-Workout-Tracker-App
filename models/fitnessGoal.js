@@ -6,8 +6,10 @@ const fitnessGoalSchema = new Schema({
   goalType: { type: String, required: true },
   startValue: Number,
   targetValue: Number,
+  unit: String,
   startDate: Date,
   targetDate: Date,
 });
 
-module.exports = mongoose.model("FitnessGoal", fitnessGoalSchema);
+// If the model is already compiled, Mongoose will reuse it rather than trying to recompile and throw an error.
+module.exports = mongoose.models.FitnessGoal || mongoose.model("FitnessGoal", fitnessGoalSchema);

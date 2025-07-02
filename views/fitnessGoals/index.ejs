@@ -1,44 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
-
-    <title>Your Fitness Goals</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  <title>Your Fitness Goals</title>
 </head>
 
 <body>
-
-     <section class="section">
+  <section class="section">
     <div class="container">
-     <h1>Your Fitness Goals</h1>
+      <h1 class="title">Your Fitness Goals</h1>
 
-<ul>
-  <% goals.forEach(goal => { %>
-    <li>
-      <strong><%= goal.goalType %></strong>:
-      <%= goal.startValue %> → <%= goal.targetValue %>
-      <a href="/fitnessGoals/<%= goal._id %>/edit">Edit</a>
-      <form action="/fitnessGoals/<%= goal._id %>/delete" method="POST" style="display:inline;">
-        <button type="submit">Delete</button>
-      </form>
-    </li>
-  <% }) %>
-</ul>
+      <ul>
+        <% goals.forEach(goal => { %>
+          <li>
+            <strong><%= goal.goalType %></strong>:
+            <%= goal.startValue %> <%= goal.unit %> → <%= goal.targetValue %> <%= goal.unit %>
+            <a class="button is-small is-link ml-2" href="/fitnessGoals/<%= goal._id %>/edit">Edit</a>
+            <form action="/fitnessGoals/<%= goal._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button class="button is-small is-danger ml-1" type="submit">Delete</button>
+            </form>
+          </li>
+        <% }) %>
+      </ul>
 
-  <li>
-  <a href="/fitnessGoals/new">New Goal</a>
-  </li>
+      <hr>
 
-  <li>
-     <a href="/"><div>Home</div></a>
-  </li>
-
-</ul>
+      <ul>
+        <li><a class="button is-primary" href="/fitnessGoals/new">New Goal</a></li>
+        <li class="mt-2"><a class="button is-light" href="/">Home</a></li>
+      </ul>
     </div>
   </section> 
-
 </body>
-
 </html>

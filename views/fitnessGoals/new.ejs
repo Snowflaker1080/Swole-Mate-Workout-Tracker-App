@@ -12,47 +12,56 @@
     <section class="section">
       <div class="container">
     
-<h1>Set or Update Your Fitness Goals</h1>
+<h1 class="title is-3">Set or Update Your Fitness Goals</h1>
 
 <form action="/fitnessGoals" method="POST">
   <fieldset>
-    <legend>Select the Goals You Want to Set or Update:</legend>
+    <legend class="subtitle is-5">Select the Goals You Want to Set or Update:</legend>
 
     <%- include('../partials/goalSection', {
       goalType: 'weight',
-      goalLabel: 'Weight Goal',
+      goalLabel: 'Weight Goal (30kg - 300kg)',
       goalUnit: 'Weight (kg)',
       step: 0.1,
+      min: 30,
+      max: 300,
       existingGoals: existingGoals
     }) %>
 
     <%- include('../partials/goalSection', {
       goalType: 'bodyFat',
-      goalLabel: 'Body Fat %',
+      goalLabel: 'Body Fat % (3 to 60 %)',
       goalUnit: 'Body Fat %',
       step: 0.1,
+      min: 3,
+      max: 60,
       existingGoals: existingGoals
     }) %>
 
     <%- include('../partials/goalSection', {
       goalType: 'restingHR',
-      goalLabel: 'Resting Heart Rate',
+      goalLabel: 'Resting Heart Rate (3 to 120 bpm)',
       goalUnit: 'HR (bpm)',
       step: 1,
+      min: 30,
+      max: 120,
       existingGoals: existingGoals
     }) %>
 
     <%- include('../partials/goalSection', {
       goalType: 'vo2Max',
-      goalLabel: 'VO2 Max',
-      goalUnit: 'VO2 Max',
+      goalLabel: 'VO2 Max 10 to 90 ml/kg/min',
+      goalUnit: 'VO2 Max (ml/kg/min)',
       step: 0.1,
+      min: 10,
+      max: 90,
       existingGoals: existingGoals
     }) %>
 
   </fieldset>
 
-  <button type="submit">Save Goals</button>
+  <br />
+  <button class="button is-primary" type="submit">Save Goals</button>
 </form>
 
 <script src="/scripts/workout.js"></script>

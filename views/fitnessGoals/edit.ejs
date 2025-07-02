@@ -4,32 +4,127 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
-
     <title>Edit User Fitness Goals</title>
   </head>
 
   <body>
     <section class="section">
       <div class="container">
-        <h1>Edit Fitness Goal</h1>
-        <form action="/fitnessGoals/<%= goal._id %>" method="POST">
-          <label>Start Weight:</label>
-          <input type="number" name="startWeightKg" value="<%= goal.startWeightKg %>" required />
-          <label>Target Weight:</label>
-          <input type="number" name="targetWeightKg" value="<%= goal.targetWeightKg %>" required />
-          <button type="submit">Update Goal</button>
-          <button type="submit">Update</button>
+
+        <h1 class="title">Edit Fitness Goal</h1>
+        <h2 class="subtitle has-text-grey-dark">
+          <%= goalLabel %>
+        </h2>
+
+        <form id="goalForm" action="/fitnessGoals/<%= goal._id %>?_method=PUT" method="POST">
+          <div class="field">
+            <label class="label">Start Value</label>
+            <div class="control">
+              <input class="input" id="startValue" type="number" name="startValue" step="any" value="<%= goal.startValue %>" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Target Value</label>
+            <div class="control">
+              <input class="input" id="targetValue" type="number" name="targetValue" step="any" value="<%= goal.targetValue %>" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Unit</label>
+            <div class="control">
+              <div class="select">
+                <select id="unitSelect" name="unit" required>
+                  <option value="kg" <%= goal.unit === 'kg' ? 'selected' : '' %>>kg (kilograms)</option>
+                  <option value="lbs" <%= goal.unit === 'lbs' ? 'selected' : '' %>>lbs (pounds)</option>
+                  <option value="%" <%= goal.unit === '%' ? 'selected' : '' %>>% (body fat)</option>
+                  <option value="bpm" <%= goal.unit === 'bpm' ? 'selected' : '' %>>bpm (heart rate)</option>
+                  <option value="ml/kg/min" <%= goal.unit === 'ml/kg/min' ? 'selected' : '' %>>ml/kg/min (VO2 Max)</option>
+                  <option value="METs" <%= goal.unit === 'METs' ? 'selected' : '' %>>METs (VO2 alt)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Start Date</label>
+            <div class="control">
+              <input class="input" type="date" name="startDate" value="<%= goal.startDate ? goal.startDate.toISOString().substring(0, 10) : '' %>">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Target Date</label>
+            <div class="control">
+              <input class="input" type="date" name="targetDate" value="<%= goal.targetDate ? goal.targetDate.toISOString().substring(0, 10) : '' %>">
+            </div>
+          </div>
+
+          <div class="buttons mt-4">
+            <button class="button is-primary" type="submit">Update Goal</button>
+          </div>
         </form>
 
         <form action="/fitnessGoals/<%= goal._id %>?_method=DELETE" method="POST">
-          <button
-            type="submit"
-            onclick="return confirm('Are you sure you want to delete this goal?');"
-          >
+          <button class="button is-danger mt-2" type="submit" onclick="return confirm('Are you sure you want to delete this goal?');">
             Delete
           </button>
         </form>
+
+        <div class="mt-4">
+          <a href="/fitnessGoals" class="button">← Back to Goals</a>
+        </div>
       </div>
     </section>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const unitSelect = document.getElementById('unitSelect');
+        const startValueInput = document.getElementById('startValue');
+        const targetValueInput = document.getElementById('targetValue');
+
+        let previousUnit = unitSelect.value;
+
+        unitSelect.addEventListener('change', () => {
+          const newUnit = unitSelect.value;
+
+          const convert = (value, from, to) => {
+            value = parseFloat(value);
+            if (isNaN(value)) return '';
+
+            // Weight: kg ↔ lbs
+            if ((from === 'kg' && to === 'lbs')) return (value * 2.20462).toFixed(2);
+            if ((from === 'lbs' && to === 'kg')) return (value / 2.20462).toFixed(2);
+
+            // VO2 Max: ml/kg/min ↔ METs (approximate conversion: 1 MET ≈ 3.5 ml/kg/min)
+            if (from === 'ml/kg/min' && to === 'METs') return (value / 3.5).toFixed(2);
+            if (from === 'METs' && to === 'ml/kg/min') return (value * 3.5).toFixed(2);
+
+            return value;
+          };
+
+          // Only convert if switching between convertible units
+          const convertiblePairs = [
+            ['kg', 'lbs'],
+            ['lbs', 'kg'],
+            ['ml/kg/min', 'METs'],
+            ['METs', 'ml/kg/min']
+          ];
+
+          const isConvertible = convertiblePairs.some(([from, to]) => from === previousUnit && to === newUnit);
+
+          if (isConvertible) {
+            const newStart = convert(startValueInput.value, previousUnit, newUnit);
+            const newTarget = convert(targetValueInput.value, previousUnit, newUnit);
+
+            startValueInput.value = newStart;
+            targetValueInput.value = newTarget;
+          }
+
+          previousUnit = newUnit;
+        });
+      });
+    </script>
   </body>
 </html>

@@ -1,159 +1,77 @@
-const express = require("express");
-const router = express.Router();
-const gymWorkout = require("../models/gymWorkout");
-const isSignedIn = require("../middleware/is-signed-in");
-const fetch = require('node-fetch');
+const GymWorkout = require("../models/gymWorkout");
+const fetch = require("node-fetch");
 
-const getCarImageFromGoogle = async (displayName) => {
-  const apiKey = process.env.GOOGLE_API_KEY;
-  const cx = process.env.GOOGLE_CSE_ID;
+// const API_KEY = process.env.GYMFIT_API_KEY;
+// console.log("Using API Key:", API_KEY);
+
+async function index(req, res) {
+  const query = req.query.q || "Deadlift"; // default search
+  const bodyPart = req.query.bodyPart || "";
+
+  let exercises = [];
+
+  const url = `https://gym-fit.p.rapidapi.com/v1/exercises/search?query=${query}&number=50&offset=0${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
 
   try {
-    const query = encodeURIComponent(`${displayName} car`);
-    const url = `https://www.googleapis.com/customsearch/v1?q=${query}&cx=${cx}&searchType=image&num=1&key=${apiKey}`;
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "X-RapidAPI-Key": process.env.GYMFIT_API_KEY,
+        "X-RapidAPI-Host": "gym-fit.p.rapidapi.com",
+      },
+    });
+
     const data = await response.json();
-    return data.items?.[0]?.link || null;
-  } catch (err) {
-    console.error("Google CSE image fetch failed:", err);
-    return null;
-  }
-};
 
-// INDEX – GET /gymWorkout — show all gymWorkout
-router.get("/", isSignedIn,  async (req, res) => {
-  try {
-    const gymWorkout = await Car.find({ user: req.session.user._id });
-    res.render("gymWorkout/index", { gymWorkout });
-  } catch (err) {
-    console.error("Error fetching gymWorkout:", err);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
-// NEW – GET /gymWorkout/new — form to create a new car
-router.get("/new", async (req, res) => {
-  const displayName = req.query.displayName || "";
-  let imageUrl = "";
-
-  if (displayName) {
-    imageUrl = await getCarImageFromGoogle(displayName);
-  }
-
-  res.render("gymWorkout/new", { imageUrl, displayName });
-});
-
-// GET Image
-router.get("/image", async (req, res) => {
-  const displayName = req.query.displayName;
-  console.log("Fetching image for:", displayName);
-
-  if (!displayName) return res.json({ imageUrl: "" });
-
-  try {
-    const imageUrl =
-      (await getCarImageFromGoogle(displayName)) ||
-      "/stylesheets/images/placeholder.jpg";
-
-       console.log("Image URL returned:", imageUrl);
-
-    res.json({ imageUrl });
-  } catch (err) {
-    console.error("Image preview fetch failed:", err);
-    res.status(500).json({ error: "Failed to fetch image" });
-  }
-});
-
-
-// CREATE – POST /gymWorkout — add new car to DB
-router.post("/", isSignedIn, async (req, res) => {
-  let { Name, DisplayName, Manufacturer, Class, imageUrl } = req.body;
-
-  try {
-    if (!Name || !DisplayName || !Manufacturer) {
-      return res.status(400).send("Missing required fields.");
+    if (Array.isArray(data.results)) {
+      exercises = data.results;
+    } else {
+      console.error("Unexpected API response:", data);
+      exercises = [];
     }
-
-     if (!imageUrl && DisplayName) {
-      imageUrl =
-        (await getCarImageFromGoogle(DisplayName)) ||
-        "/stylesheets/images/placeholder.jpg";
-    }
-
-
-    await Car.create({ Name, DisplayName, Manufacturer, Class, imageUrl, user: req.session.user._id, });
-   console.log(`Custom car "${DisplayName}" added by ${req.session.user.username}`);
-    res.redirect("/gymWorkout");
   } catch (err) {
-    console.error("Failed to save custom car:", err);
-    res.status(500).send("Failed to save car.");
+    console.error("API fetch error:", err);
   }
-});
 
-// SHOW – GET /gymWorkout/:id — show single car detail
-router.get("/:id", async (req, res) => {
-  try {
-    const car = await Car.findById(req.params.id);
-    if (!car || car.user.toString() !== req.session.user._id) {
-      return res.status(403).send("Access denied");
-    }
+  const savedWorkouts = await GymWorkout.find({ userId: req.session.userId });
 
-    res.render("gymWorkout/show", { car });
-  } catch (err) {
-    console.error("Error fetching car:", err);
-    res.status(404).send("Car not found");
-  }
-});
+  res.render("gymWorkout/index", { exercises, savedWorkouts });
+}
 
-// EDIT – GET /gymWorkout/:id/edit — form to edit a car
-router.get("/:id/edit", isSignedIn, async (req, res) => {
-  try {
-    const car = await Car.findById(req.params.id);
-     if (!car || car.user.toString() !== req.session.user._id) {
-      return res.status(403).send("Access denied.");
-    }
+async function newForm(req, res) {
+  res.render("gymWorkout/new");
+}
 
-    res.render("gymWorkout/edit", { car });
-  } catch (err) {
-    console.error("Error loading edit form:", err);
-    res.status(404).send("Car not found");
-  }
-});
+async function create(req, res) {
+  const { name, bodyPart, equipment, instructions, image } = req.body;
+  await GymWorkout.create({
+    userId: req.session.userId,
+    name,
+    bodyPart,
+    equipment,
+    instructions,
+    image,
+  });
+  res.redirect("/gymWorkout");
+}
 
-// UPDATE – PUT /gymWorkout/:id — update car in DB
-router.put("/:id", isSignedIn, async (req, res) => {
-  try {
-    const updatedCar = {
-      Name: req.body.Name,
-      DisplayName: req.body.DisplayName,
-      Manufacturer: req.body.Manufacturer,
-      Class: req.body.Class,
-      imageUrl: req.body.imageUrl,
-    };
+async function editForm(req, res) {
+  const workout = await GymWorkout.findOne({
+    _id: req.params.id,
+    userId: req.session.userId,
+  });
 
-    await Car.findByIdAndUpdate(req.params.id, updatedCar);
-    res.redirect(`/gymWorkout/${req.params.id}`);
-  } catch (err) {
-    console.error("Error updating car:", err);
-    res.status(500).send("Update failed");
-  }
-});
+  if (!workout) return res.status(404).send("Not found");
+  res.render("gymWorkout/edit", { workout });
+}
 
-// DELETE – DELETE /gymWorkout/:id — remove a car
-router.delete("/:id", isSignedIn, async (req, res) => {
-  try {
-    const car = await Car.findById(req.params.id);
-     if (!car || car.user.toString() !== req.session.user._id) {
-      return res.status(403).send("Access denied.");
-    }
+async function update(req, res) {
+  const { name, bodyPart, equipment, instructions, image } = req.body;
+  await GymWorkout.findOneAndUpdate(
+    { _id: req.params.id, userId: req.session.userId },
+    { name, bodyPart, equipment, instructions, image }
+  );
+  res.redirect("/gymWorkout");
+}
 
-    await Car.findByIdAndDelete(req.params.id);
-    console.log(`Car deleted by ${req.session.user.username}: ID ${req.params.id}`);
-    res.redirect("/gymWorkout");
-  } catch (err) {
-    console.error("Error deleting car:", err);
-    res.status(500).send("Failed to delete car.");
-  }
-});
-
-module.exports = router;
+module.exports = { index, newForm, create, editForm, update };

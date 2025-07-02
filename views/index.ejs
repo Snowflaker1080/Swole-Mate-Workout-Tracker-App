@@ -25,41 +25,28 @@
 
     <p>An app for tracking your workouts.</p>
 
-    <%if (user) {%>
-     <nav>
-      <ul>
-        <li>
-          <a class="cars-index-link" href="/gymWorkout">
-          <div class="index-link-text">My Gym Workouts</div></a>
-        </li>
-
-           <li>
-          <a class="cars-index-link" href="/fitnessGoals">
-          <div class="index-link-text">Fitness Goals</div></a>
-      </li>
-
-        <li>
-          <a class="cars-index-link" href="/gtav">
-          <div class="index-link-text">Browse Workouts</div></a>
-      </li>
-        
-        <li> 
-          <a class="cars-index-link" href="/auth/sign-out">
-            <div class="index-link-text">Sign out</div></a> 
-        </li>
-
-      </ul>
+    <div>
+      <nav>
+        <ul>
+          <li><a href="/gymWorkout">Browse Exercises</a></li>
+            <%if (user) {%>
+        <li><a href="/gymWorkout">My Gym Workouts</a></li>
+        <li><a href="/fitnessGoals">Fitness Goals</a></li>
+        <li><a href="/auth/sign-out">Sign out</a></li>
+    
+            <% } else { %>
+      <p>
+        <li><a href="/auth/sign-up" class="auth-link">Create an Account</a></li> or 
+        <li><a href="/auth/sign-in" class="auth-link">Sign In</a></li> to view your workout plan
+      </p> 
+            <% } %>
+        </ul>
     </nav>
-  <% } else { %>
-     <p>
-      <a href="/auth/sign-up" class="auth-link">Create an Account</a> or 
-      <a href="/auth/sign-in" class="auth-link">Sign In</a> to view your workout plan</p> 
-    <% } %>
   </div>
  
-  <% if (!user) { %>
-    <p><a href="/gtav"class="auth-link">View workouts as a Guest</a></p>
-  <% } %>
+            <% if (!user) { %>
+      <p><a href="/gymWorkout"class="auth-link">Browse exercises as a guest</a></p>
+            <% } %>
 
   </body>
 
@@ -67,4 +54,5 @@
     Images by
     <a href="https://wallpapercat.com/gta-v-wallpapers">Insert Image Attribution Here</a>
   </footer>
+  
 </html>

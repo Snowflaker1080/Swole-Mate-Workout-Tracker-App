@@ -1,5 +1,4 @@
-// Show all goals for the user
-const FitnessGoal = require('../models/FitnessGoal');
+const FitnessGoal = require('../models/fitnessGoal');
 
 async function index(req, res) {
   if (!req.user) {
@@ -48,6 +47,7 @@ const bulkCreateOrUpdate = async (req, res) => {
           goalType,
           startValue: data.startValue,
           targetValue: data.targetValue,
+          unit: data.unit,
           startDate: data.startDate,
           targetDate: data.targetDate
         },
@@ -70,7 +70,21 @@ const edit = async (req, res) => {
   try {
     const goal = await FitnessGoal.findById(req.params.id);
     if (!goal) return res.status(404).send("Goal not found");
-    res.render("fitnessGoals/edit", { goal });
+
+    const goalLabels = {
+      startWeightKg: "Start Weight",
+      targetWeightKg: "Target Weight",
+      startBodyFat: "Start Body Fat %",
+      targetBodyFat: "Target Body Fat %",
+      startRestingHR: "Resting Heart Rate",
+      targetRestingHR: "Target Heart Rate",
+      startVO2Max: "Start VO2 Max",
+      targetVO2Max: "Target VO2 Max"
+    };
+
+    const goalLabel = goalLabels[goal.goalType] || goal.goalType;
+    res.render("fitnessGoals/edit", { goal, goalLabel });
+
   } catch (err) {
     console.error("Error loading edit form:", err);
     res.status(500).send("Internal Server Error");
@@ -80,7 +94,22 @@ const edit = async (req, res) => {
 // Update a single goal by ID
 const update = async (req, res) => {
   try {
-    await FitnessGoal.findByIdAndUpdate(req.params.id, req.body);
+    const goal = await FitnessGoal.findOneAndUpdate (
+      { _id: req.params.id, userId: req.session.userId }, // securely match
+      {  
+      startValue: req.body.startValue,
+        targetValue: req.body.targetValue,
+        unit: req.body.unit,
+        startDate: req.body.startDate,
+        targetDate: req.body.targetDate
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!goal) {
+      return res.status(403).send("Not authorised to udpate this goal.");
+    }
+
     res.redirect("/fitnessGoals");
   } catch (err) {
     console.error("Error updating goal:", err);
@@ -88,22 +117,29 @@ const update = async (req, res) => {
   }
 };
 
-// Delete a single goal by ID
+// Delete a single goal by ID (with ownership check)
 const remove = async (req, res) => {
   try {
-    await FitnessGoal.findByIdAndDelete(req.params.id);
+    const deleted = await FitnessGoal.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.session.userId // ensure only the owner can delete
+    });
+
+    if (!deleted) {
+      return res.status(403).send("Not authorised to delete this goal.");
+    }
+
     res.redirect("/fitnessGoals");
   } catch (err) {
     console.error("Error deleting goal:", err);
     res.status(500).send("Internal Server Error");
   }
 };
-
 module.exports = {
   index,
   new: newForm,
   bulkCreateOrUpdate,
   edit,
   update,
-  delete: remove
+  deleteGoal: remove
 };
