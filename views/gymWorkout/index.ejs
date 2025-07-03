@@ -6,7 +6,7 @@
    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
 
-     <title>Gym Workout</title>
+    <title>Gym Workout</title>
   </head>
 <body>
   <section class="section">
@@ -17,109 +17,122 @@
     <form class="box mb-5" method="GET" action="/gymWorkout">
       <div class="field is-grouped is-flex-wrap-wrap">
         <div class="control is-expanded">
-      <input class="input" type="text" name="q" placeholder="Search by name (e.g Squat, Row)" />
+          <input class="input" type="text" name="q" placeholder="Search by name (e.g Squat, Row)" />
+        </div>
+        <div class="control">
+          <div class="select">
+            <select name="bodyPart">
+              <option value="">All Body Parts</option>
+              <option value="Arms">Arms</option>
+              <option value="Back">Back</option>
+              <option value="Chest">Chest</option>
+              <option value="Core">Core</option>
+              <option value="Legs">Legs</option>
+              <option value="Shoulders">Shoulders</option>
+            </select>
+          </div>
+        </div>
+        <div class="control">
+          <button class="button is-link" type="submit">Search</button>
+        </div>
       </div>
-      <div class="control">
-        <div class="select">
-          <select name="bodyPart">
-            <option value="">All Body Parts</option>
-            <option value="Arms">Arms</option>
-            <option value="Back">Back</option>
-            <option value="Chest">Chest</option>
-            <option value="Core">Core</option>
-            <option value="Legs">Legs</option>
-            <option value="Shoulders">Shoulders</option>
-          </select>
-          </div>
-          </div>
-          <div class="control">
-        <button class="button is-link" type="submit">Search</button>
-        </div>
-        </div>
-      </form>
+    </form>
 
-<!-- Search Results -->
-        <h2 class="title is-4 mt-5">Search Results</h2>
-        <% if (exercises.length > 0) { %>
-          <div class="columns is-multiline">
-            <% exercises.forEach(ex => { %>
-              <div class="column is-half">
+    <!-- Search Results -->
+    <h2 class="title is-4 mt-5">Search Results</h2>
+    <% if (exercises.length > 0) { %>
+      <div class="columns is-multiline">
+        <% exercises.forEach(ex => { %>
+          <div class="column is-half">
+            <div class="box">
+              <article class="media">
 
-                <div class="box">
-                  <article class="media">
-                  <% if (ex.image && ex.image !== 'image_coming_soon') { %>
-                    <figure class="media-left">
-                      <p class="image is-128x128">
-                        <img 
-                         src="/imagetest/image-proxy?url=<%= encodeURIComponent(ex.image) %>" 
-                         alt="<%= ex.name %>" 
-                         crossorigin="anonymous"
-                         />
-                      </p>
-                    </figure>
-                  <% } %>
-                    <div class="media-content">
-                      <div class="content">
-                        <p>
-                          <strong><%= ex.name %></strong><br />
-                          <small><%= ex.bodyPart %> | <%= ex.equipment %></small><br />
-                          <%= ex.instructions %>
-                        </p>
-                      </div>
+              <% if (ex.proxyImageUrl) { %>
+                <figure class="media-left">
+                  <p class="image is-128x128">
+                    <img 
+                      src="<%= ex.proxyImageUrl %>" 
+                      alt="<%= ex.name %>" 
+                      crossorigin="anonymous"
+                    />
+                  </p>
+                </figure>
+              <% } %>
 
-                      <% if (user) { %>
-                        <form action="/gymWorkout" method="POST">
-                          <input type="hidden" name="apiId" value="<%= ex.id %>">
-                          <input type="hidden" name="name" value="<%= ex.name %>">
-                          <input type="hidden" name="bodyPart" value="<%= ex.bodyPart %>">
-                          <input type="hidden" name="equipment" value="<%= ex.equipment %>">
-                          <input type="hidden" name="instructions" value="<%= ex.instructions %>">
-                          <input type="hidden" name="image" value="<%= ex.image %>">
-                          <button type="submit" class="button is-primary is-small mt-2">Save to My Workouts</button>
-                        </form>
-                      <% } else { %>
-                        <p class="mt-2">
-                          <a href="/auth/sign-in">Sign in</a> to save this workout.</p>
-                      <% } %>
-                    </div>
-                  </article>
-                </div>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <p class="has-text-danger">No exercises found. Try another search.</p>
-        <% } %>
-
-  <!-- Saved Workouts Section -->
-        <h2 class="title is-4 mt-6">Your Saved Workouts</h2>
-        <% if (savedWorkouts.length > 0) { %>
-          <div class="columns is-multiline">
-            <% savedWorkouts.forEach(w => { %>
-              <div class="column is-half">
-                <div class="box">
-                  <strong><%= w.name %></strong><br />
-                  <small><%= w.bodyPart %> | <%= w.equipment %></small>
-                  <p><%= w.instructions %></p>
-                  <% if (w.image) { %>
-                    <img src="<%= w.image %>" alt="<%= w.name %>" class="mt-2" width="150" />
-                  <% } %>
-                  <p class="mt-2">
-                    <a href="/gymWorkout/<%= w._id %>/edit" class="button is-small is-warning">Edit</a>
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong><%= ex.name %></strong><br />
+                    <small><%= ex.bodyPart %> | <%= ex.equipment %></small><br />
+                    <%= ex.instructions %>
                   </p>
                 </div>
-              </div>
-            <% }) %>
-          </div>
-        <% } else { %>
-          <p>You haven't saved any workouts yet.</p>
-        <% } %>
 
-        <!-- Back to Home -->
-        <div class="mt-5">
-          <a href="/" class="button is-light">← Back to Home</a>
+                <% if (user) { %>
+                  <form action="/gymWorkout" method="POST">
+                    <input type="hidden" name="apiId" value="<%= ex.id %>">
+                    <input type="hidden" name="name" value="<%= ex.name %>">
+                    <input type="hidden" name="bodyPart" value="<%= ex.bodyPart %>">
+                    <input type="hidden" name="equipment" value="<%= ex.equipment %>">
+                    <input type="hidden" name="instructions" value="<%= ex.instructions %>">
+                    <input type="hidden" name="image" value="<%= ex.image %>">
+                    <button type="submit" class="button is-primary is-small mt-2">Save to My Workouts</button>
+                  </form>
+                <% } else { %>
+                  <p class="mt-2">
+                    <a href="/auth/sign-in">Sign in</a> to save this workout.
+                  </p>
+                <% } %>
+              </div>
+            </article>
+          </div>
         </div>
+        <% }) %>
       </div>
-    </section>
-  </body>
+    <% } else { %>
+      <p class="has-text-danger">No exercises found. Try another search.</p>
+    <% } %>
+
+    <!-- Saved Workouts Section -->
+    <h2 class="title is-4 mt-6">Saved Gym Exercises</h2>
+    <% if (savedWorkouts.length > 0) { %>
+      <div class="columns is-multiline">
+        <% savedWorkouts.forEach(w => { %>
+          <div class="column is-half">
+            <div class="box">
+              <strong><%= w.name %></strong><br />
+              <small><%= w.bodyPart %> | <%= w.equipment %></small>
+              <p><%= w.instructions %></p>
+
+              <% if (w.proxyImageUrl) { %>
+                <img 
+                  src="<%= w.proxyImageUrl %>" 
+                  alt="<%= w.name %>" 
+                  class="mt-2" 
+                  width="150" />
+              <% } %>
+
+              <p class="mt-2">
+                <a href="/gymWorkout/<%= w._id %>/edit" class="button is-small is-warning">Edit</a>
+              </p>
+              <p class="mt-2">
+                <form action="/gymWorkout/<%= w._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Confirm delete?');">
+                  <button type="submit" class="button is-small is-danger">Delete</button>
+                </form>
+              </p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } else { %>
+      <p>You haven't saved any workouts yet.</p>
+    <% } %>
+
+    <!-- Back to Home -->
+    <div class="mt-5">
+      <a href="/" class="button is-light">← Back to Home</a>
+    </div>
+  </div>
+</section>
+</body>
 </html>

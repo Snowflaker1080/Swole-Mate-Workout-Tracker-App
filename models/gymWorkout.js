@@ -23,6 +23,15 @@ const gymWorkoutSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+   image: {
+    type: String,
+    validate: {
+      validator: function (url) {
+        return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/.test(url);
+      },
+      message: (props) => `${props.value} is not a valid image URL.`,
+    },
+  },
   notes: String,
   // Allow user to favourite a workout
   isFavourite: { type: Boolean, default: false },
