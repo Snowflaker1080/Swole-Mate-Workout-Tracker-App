@@ -44,29 +44,32 @@
           <div class="columns is-multiline">
             <% exercises.forEach(ex => { %>
               <div class="column is-half">
+
                 <div class="box">
                   <article class="media">
-                    <% if (exercise.proxy?.ImageUrl) { %>
-                      <figure class="media-left">
-                        <p class="image is-128x128">
-                          <img 
-                          src="<%= exercise.proxyImageUrl %>" 
-                          alt="<%= exercise.name %>"
-                        />
-                        </p>
-                      </figure>
-                    <% } %>
+                  <% if (ex.image && ex.image !== 'image_coming_soon') { %>
+                    <figure class="media-left">
+                      <p class="image is-128x128">
+                        <img 
+                         src="/imagetest/image-proxy?url=<%= encodeURIComponent(ex.image) %>" 
+                         alt="<%= ex.name %>" 
+                         crossorigin="anonymous"
+                         />
+                      </p>
+                    </figure>
+                  <% } %>
                     <div class="media-content">
                       <div class="content">
                         <p>
                           <strong><%= ex.name %></strong><br />
                           <small><%= ex.bodyPart %> | <%= ex.equipment %></small><br />
-                          <%= ex.instructions || "No instructions provided." %>
+                          <%= ex.instructions %>
                         </p>
                       </div>
 
                       <% if (user) { %>
                         <form action="/gymWorkout" method="POST">
+                          <input type="hidden" name="apiId" value="<%= ex.id %>">
                           <input type="hidden" name="name" value="<%= ex.name %>">
                           <input type="hidden" name="bodyPart" value="<%= ex.bodyPart %>">
                           <input type="hidden" name="equipment" value="<%= ex.equipment %>">
@@ -99,7 +102,7 @@
                   <small><%= w.bodyPart %> | <%= w.equipment %></small>
                   <p><%= w.instructions %></p>
                   <% if (w.image) { %>
-                    <img src="<%= w.image %>" alt="<%= w.name %>" class="mt-2" width="150" crossorigin="anonymous" />
+                    <img src="<%= w.image %>" alt="<%= w.name %>" class="mt-2" width="150" />
                   <% } %>
                   <p class="mt-2">
                     <a href="/gymWorkout/<%= w._id %>/edit" class="button is-small is-warning">Edit</a>

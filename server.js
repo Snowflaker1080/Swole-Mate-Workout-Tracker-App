@@ -82,11 +82,13 @@ import authController from "./controllers/auth.js"; // auth router holds all the
 import fitnessGoalsRoutes from "./routes/fitnessGoals.js";
 import gymWorkoutRoutes from "./routes/gymWorkout.js";
 import isSignedIn from "./middleware/is-signed-in.js";
+import imageProxyRoutes from "./routes/imageProxy.js";
 import userRoutes from "./controllers/users.js";
 
 app.use("/auth", authController);
 app.use("/fitnessGoals", fitnessGoalsRoutes);
 app.use("/gymWorkout", gymWorkoutRoutes);
+app.use("/imagetest", imageProxyRoutes);
 app.use("/users", userRoutes);
 
 // GET - HOMEPAGE

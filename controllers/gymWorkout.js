@@ -66,6 +66,7 @@ try {
     }
 
     const contentType = response.headers.get("content-type");
+    
     res.setHeader("Content-Type", contentType);
     res.setHeader("Cache-Control", "public, max-age=3600"); // Cache for 1 hour
 
@@ -80,6 +81,7 @@ try {
 // Saved Workouts ## Orphaned block(not wrapped in a function)
   // const savedWorkouts = await GymWorkout.find({ userId: req.session.userId });
   // res.render("gymWorkout/index", { exercises, savedWorkouts });
+
 
 // Render new workout form
 async function newForm(req, res) {
