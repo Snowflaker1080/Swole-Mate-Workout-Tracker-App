@@ -46,10 +46,13 @@
               <div class="column is-half">
                 <div class="box">
                   <article class="media">
-                    <% if (ex.image) { %>
+                    <% if (exercise.proxy?.ImageUrl) { %>
                       <figure class="media-left">
                         <p class="image is-128x128">
-                          <img src="<%= ex.image %>" alt="<%= ex.name %>" crossorigin="anonymous" />
+                          <img 
+                          src="<%= exercise.proxyImageUrl %>" 
+                          alt="<%= exercise.name %>"
+                        />
                         </p>
                       </figure>
                     <% } %>

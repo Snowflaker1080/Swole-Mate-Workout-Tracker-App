@@ -1,6 +1,8 @@
-const User = require('../models/user');
+// User model import using ESM syntax
+import User from "../models/user.js";
 
-module.exports = async function passUserToView(req, res, next) {
+// Define and export the middleware function
+export default async function passUserToView(req, res, next) {
   try {
     if (req.session && req.session.userId) {
       const user = await User.findById(req.session.userId);
@@ -11,7 +13,7 @@ module.exports = async function passUserToView(req, res, next) {
       }
     }
 
-    // If no user or lookup failed
+    // If no user is found or session doesn't exist, nullify user context
     req.user = null;
     res.locals.user = null;
     return next();

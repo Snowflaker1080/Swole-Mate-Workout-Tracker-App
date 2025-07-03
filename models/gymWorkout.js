@@ -1,13 +1,36 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const gymWorkoutSchema = new Schema({
-  userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  name: String, // Exercise name
-  bodyPart: String, // e.g. Chest, Back
-  equipment: String, // e.g. Barbell
-  instructions: String, // API's instructions
-  image: String // For image field
-}, { timestamps: true }); // When saving workouts
+import mongoose from "mongoose";
 
-module.exports = mongoose.model('GymWorkout', gymWorkoutSchema);
+const { Schema } = mongoose;
+
+const gymWorkoutSchema = new mongoose.Schema({
+  apiId: {
+    type: String,
+    required: true,
+    unique: true, // Prevent duplicates if saving from API
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  bodyPart: {
+    type: String,
+    enum: ["Legs", "Back", "Chest", "Shoulders", "Arms", "Core"],
+    required: true,
+  },
+  // Link the workout to a specific user (used for personalisation and CRUD control)
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  notes: String,
+  // Allow user to favourite a workout
+  isFavourite: { type: Boolean, default: false },
+  tags: [String]
+});
+
+// Compile the schema into a Mongoose model called 'GymWorkout' - This automatically maps to the 'gymworkouts' collection in MongoDB
+const GymWorkout = mongoose.models.GymWorkout || mongoose.model("GymWorkout", gymWorkoutSchema);
+
+// Export the model using ESM syntax
+export default GymWorkout;

@@ -1,6 +1,10 @@
-const express = require("express");
+// Module imports
+  // Import Express to create a router
+import express from "express";
+  // Import the User model to perform DB operations
+import user from "../models/user.js";
+  // Create a new Express router
 const router = express.Router();
-const User = require("../models/user.js");
 
 // READ: All Users
 router.get("/", async (req, res) => {
@@ -19,7 +23,7 @@ router.get("/new", (req, res) => {
   res.render("users/new");
 });
 
-// CREATE: Submit form
+// CREATE: Submit new user form
 router.post("/", async (req, res) => {
   await User.create(req.body);
   res.redirect("/users");
@@ -43,4 +47,4 @@ router.delete("/:id", async (req, res) => {
   res.redirect("/users");
 });
 
-module.exports = router;
+export default router;

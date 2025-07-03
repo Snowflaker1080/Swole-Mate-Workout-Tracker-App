@@ -1,5 +1,7 @@
-const mongoose = require("mongoose");
+// Import the mongoose library for schema and database interaction
+import mongoose from "mongoose";
 
+// Schema for a User document defined
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -13,6 +15,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+// Compile the schema into a Mongoose model called 'User'- This creates a 'users' collection in MongoDB
 const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+// Export the model so it can be imported elsewhere in the app
+export default User;

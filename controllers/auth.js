@@ -1,18 +1,23 @@
-const express = require("express");
-const bcrypt = require("bcrypt");
+// Imports
+  // Import Express to create a router
+import express from "express";
+  // Import bcrypt fro password hashing and verificaiton
+import bcrypt from "bcrypt";
+  // Import User model from database
+import User from "../models/user.js";
+
+// Initialise the router object for defining auth-related routes
 const router = express.Router();
-const User = require("../models/user.js");
 
-//__ROUTER__//
-
-//--- GET sign-up form ----------------------------------------------------//
+// Route: GET /auth/sign-up - Purpose: Render the sign-up form to the user
 router.get("/sign-up", (req, res) => {
   res.render("auth/sign-up");
 });
 
-// POST sign-up form
+// Route: POST /auth/sign-up - Purpose: Handle form submission for new user registration
 router.post("/sign-up", async (req, res) => {
   try {
+      // Check if the username is already taken
     const userInDatabase = await User.findOne({ username: req.body.username });
 
     if (userInDatabase) {
@@ -22,7 +27,7 @@ router.post("/sign-up", async (req, res) => {
       <p><a href="/">Home</a></p>
       `);
     }
-
+      // Ensure passwords match
     if (req.body.password !== req.body.confirmPassword) {
       return res.send(`
     <h1>Passwords do not match! Try again</h1>
@@ -31,15 +36,19 @@ router.post("/sign-up", async (req, res) => {
       `);
     }
 
+     // Hash the password before storing
     const hashedPassword = bcrypt.hashSync(req.body.password, 10); //salting
 
-    // pass in expected fields, avoiding full req.body
+    // Pass in expected fields, avoiding full req.body. Prepare user object with only required fields
     const newUser = {
       username: req.body.username,
       password: hashedPassword,
     };
 
+     // Save user to the database
     const user = await User.create(newUser);
+
+     // Show thank-you page with their username
     res.render("auth/thank-you", { username: user.username });
   } catch (err) {
     console.error("Sign Up error", err);
@@ -47,13 +56,14 @@ router.post("/sign-up", async (req, res) => {
   }
 });
 
-//--- GET sign-in form ----------------------------------------------------//
+// Route: GET /auth/sign-in - Purpose: Render the sign-in form
 router.get("/sign-in", (req, res) => {
   res.render("auth/sign-in");
 });
 
-// POST sign-in form
+// Route: POST /auth/sign-in - Purpose: Authenticate user credentials
 router.post("/sign-in", async (req, res) => {
+  // Find the user in the database
   const userInDatabase = await User.findOne({ username: req.body.username });
 
   if (!userInDatabase) {
@@ -63,7 +73,7 @@ router.post("/sign-in", async (req, res) => {
       <p><a href="/">Home</a></p>
     `);
   }
-
+  // Validate password using bcrypt
   const validPassword = bcrypt.compareSync(
     req.body.password,
     userInDatabase.password
@@ -76,20 +86,21 @@ router.post("/sign-in", async (req, res) => {
     `);
   }
 
- // Store the user's _id in the session
+  // Store the user's _id in the session
   req.session.userId = userInDatabase._id;
 
-  // Optional: store username too
+  // Store username for quick access in views
   req.session.user = {
     username: userInDatabase.username,
   };
 
+  // Save session and redirect to homepage
   req.session.save(() => {
     res.redirect("/");
   });
 });
 
-// GET sign-out
+// Route: GET /auth/sign-out - Purpose: Destroy the session and log the user out
 router.get("/sign-out", (req, res) => {
   req.session.destroy((err) => {
     if (err) console.error(err);
@@ -97,4 +108,6 @@ router.get("/sign-out", (req, res) => {
   });
 });
 
-module.exports = router;
+// Export the router so it can be used in server.js
+export default router;
+

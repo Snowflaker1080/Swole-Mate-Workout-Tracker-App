@@ -1,6 +1,9 @@
-const mongoose = require("mongoose");
-const Schema = mongoose.Schema;
+// Import the mongoose library
+import mongoose from "mongoose";
 
+const { Schema } = mongoose;
+
+// Define the schema for a fitness goal entry
 const fitnessGoalSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   goalType: { type: String, required: true },
@@ -11,5 +14,8 @@ const fitnessGoalSchema = new Schema({
   targetDate: Date,
 });
 
+// Export the model for use throughout the app
 // If the model is already compiled, Mongoose will reuse it rather than trying to recompile and throw an error.
-module.exports = mongoose.models.FitnessGoal || mongoose.model("FitnessGoal", fitnessGoalSchema);
+const FitnessGoal = mongoose.models.FitnessGoal || mongoose.model("FitnessGoal", fitnessGoalSchema);
+
+export default FitnessGoal;

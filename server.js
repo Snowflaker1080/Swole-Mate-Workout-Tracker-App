@@ -1,17 +1,25 @@
+// ECMAScript Modules (ESM) syntax
 // Load environment variables
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 dotenv.config();
 
 // Module imports
-const express = require("express");
-const app = express();
-const fetch = require("node-fetch");
-const methodOverride = require("method-override");
-const mongoose = require("mongoose");
-const morgan = require("morgan");
-const path = require("path");
-const session = require("express-session");
-const MongoStore = require("connect-mongo");
+import express from "express";
+import fetch from "node-fetch";
+import methodOverride from "method-override";
+import mongoose from"mongoose";
+import morgan from"morgan";
+import path from"path";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+
+// Import ESM-compatible helpers for __dirname resolution
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // MongoDB connection - folder name explicitly stated
 const db_url = process.env.MONGODB_URI;
@@ -29,16 +37,17 @@ mongoose.connection.on("connected", () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
 
-// Port setup - environment variable or default to 3000 - (ternary statement)
+// Express port setup - environment variable or default to 3000 - (ternary statement)
+const app = express();
 const port = process.env.PORT || 3000;
 
 // View engines
-app.set("view engine", "ejs"); // set the view engine to ejs
+app.set("view engine", "ejs"); // set view engine to ejs
 app.set("views", path.join(__dirname, "views"));
 
 // Core Middleware - to serve static files from the directory
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); //## Check if required?
+app.use(express.static(path.join(__dirname, "public"))); // serve images, CSS, JS
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data from forms
 app.use(methodOverride("_method")); // Middleware for using HTTP verbs such as PUT or DELETE
 app.use(morgan("dev")); // Morgan for logging HTTP requests
@@ -51,7 +60,7 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: db_url,
-      collectionName: "sessions", // optional
+      collectionName: "sessions",
     }),
     cookie: {
       maxAge: 1000 * 60 * 60 * 24, // 1 day
@@ -59,9 +68,9 @@ app.use(
   })
 );
 
-// Middleware to inject user into views
+// Middleware to pass user to views
 // Always AFTER session middleware & before routes to access user
-const passUserToView = require("./middleware/pass-user-to-view");
+import passUserToView from "./middleware/pass-user-to-view.js";
 app.use(passUserToView); 
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
@@ -69,24 +78,23 @@ app.use((req, res, next) => {
 });
 
 // Route connections
-const authController = require("./controllers/auth.js"); // auth router holds all the auth endpoints
-const fitnessGoalsRoutes = require("./routes/fitnessGoals");
-const gymWorkoutRoutes = require("./routes/gymWorkout");
-const isSignedIn = require("./middleware/is-signed-in");
-const userRoutes = require("./controllers/users");
+import authController from "./controllers/auth.js"; // auth router holds all the auth endpoints
+import fitnessGoalsRoutes from "./routes/fitnessGoals.js";
+import gymWorkoutRoutes from "./routes/gymWorkout.js";
+import isSignedIn from "./middleware/is-signed-in.js";
+import userRoutes from "./controllers/users.js";
 
 app.use("/auth", authController);
 app.use("/fitnessGoals", fitnessGoalsRoutes);
 app.use("/gymWorkout", gymWorkoutRoutes);
 app.use("/users", userRoutes);
 
-
 // GET - HOMEPAGE
 app.get("/", async (req, res) => {
   res.render("index.ejs", { user: req.session.user });
 });
 
-// Wildcard
+// Wildcard handler
 app.get("/*spat", async (req, res) => {
   try {
     console.warn(`Unknown route accessed: ${req.originalUrl}`);
@@ -103,7 +111,7 @@ app.use((req, res) => {
   res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`);
 });
 
-// Start server listener
+// Server listener
 app.listen(port, () => {
   console.log(`The express app/server is ready on http://localhost:${port}`);
 });

@@ -1,13 +1,29 @@
-const express = require('express');
+// ECMAScript Modules (ESM) syntax
+// Imports
+import express from "express";
+import {
+    index,
+    imageProxy,
+    newForm,
+    create,
+    editForm,
+    update,
+} from "../controllers/gymWorkout.js";
+
+import isSignedIn from "../middleware/is-signed-in.js";
+
 const router = express.Router();
-const gymWorkoutController = require('../controllers/gymWorkout');
-const isSignedIn = require('../middleware/is-signed-in');
 
-// ## Check authentication middleware is applied if needed
-router.get('/', gymWorkoutController.index); // public exercise search
-router.get('/new',isSignedIn, gymWorkoutController.newForm); // isSignedIn protected
-router.post('/', isSignedIn, gymWorkoutController.create); // isSignedIn protected
-router.get('/:id/edit', isSignedIn, gymWorkoutController.editForm); // isSignedIn protected
-router.post('/:id',isSignedIn, gymWorkoutController.update); // isSignedIn protected
+// Public route
+router.get("/", index); // Exercise search visible to all
 
-module.exports = router;
+// Protected routes
+router.get("/new",isSignedIn, newForm); 
+router.post("/", isSignedIn, create); 
+router.get("/:id/edit", isSignedIn, editForm); 
+router.post("/:id",isSignedIn, update); 
+
+// Proxy image fetch
+router.get("/image-proxy", imageProxy);
+
+export default router;

@@ -28,16 +28,16 @@
     <div>
       <nav>
         <ul>
-          <li><a href="/gymWorkout">Browse Exercises</a></li>
+          <li><a class="button is-primary" href="/gymWorkout">Browse Exercises</a></li>
             <%if (user) {%>
-        <li><a href="/gymWorkout">My Gym Workouts</a></li>
-        <li><a href="/fitnessGoals">Fitness Goals</a></li>
-        <li><a href="/auth/sign-out">Sign out</a></li>
+        <li><a class="button is-primary" href="/gymWorkout">My Gym Workouts</a></li>
+        <li><a class="button is-primary" href="/fitnessGoals">Fitness Goals</a></li>
+        <li><a class="button is-primary" href="/auth/sign-out">Sign out</a></li>
     
             <% } else { %>
       <p>
-        <li><a href="/auth/sign-up" class="auth-link">Create an Account</a></li> or 
-        <li><a href="/auth/sign-in" class="auth-link">Sign In</a></li> to view your workout plan
+        <li><a class="auth-link" href="/auth/sign-up" >Create an Account</a></li> or 
+        <li><a class="auth-link" href="/auth/sign-in" >Sign In</a></li> to view your workout plan
       </p> 
             <% } %>
         </ul>
@@ -45,7 +45,7 @@
   </div>
  
             <% if (!user) { %>
-      <p><a href="/gymWorkout"class="auth-link">Browse exercises as a guest</a></p>
+      <p><a class="auth-link" href="/gymWorkout">Browse exercises as a guest</a></p>
             <% } %>
 
   </body>

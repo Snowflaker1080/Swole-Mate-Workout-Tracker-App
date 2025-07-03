@@ -1,4 +1,5 @@
-const FitnessGoal = require('../models/fitnessGoal');
+
+import FitnessGoal from "../models/fitnessGoal.js";
 
 async function index(req, res) {
   if (!req.user) {
@@ -25,7 +26,7 @@ const newForm = async (req, res) => {
   }
 };
 
-// Bulk create or update selected goals
+// Handle submission of multiple fitness goals from form
 const bulkCreateOrUpdate = async (req, res) => {
   const userId = req.session.userId;
   let selected = req.body.selectedGoals;
@@ -65,7 +66,7 @@ const bulkCreateOrUpdate = async (req, res) => {
   }
 };
 
-// Render edit form for a single goal
+// Render edit form for a single goal by ID
 const edit = async (req, res) => {
   try {
     const goal = await FitnessGoal.findById(req.params.id);
@@ -91,13 +92,13 @@ const edit = async (req, res) => {
   }
 };
 
-// Update a single goal by ID
+// UPDATE a single goal securely by ID and user
 const update = async (req, res) => {
   try {
-    const goal = await FitnessGoal.findOneAndUpdate (
-      { _id: req.params.id, userId: req.session.userId }, // securely match
-      {  
-      startValue: req.body.startValue,
+    const goal = await FitnessGoal.findOneAndUpdate(
+      { _id: req.params.id, userId: req.session.userId },
+      {
+        startValue: req.body.startValue,
         targetValue: req.body.targetValue,
         unit: req.body.unit,
         startDate: req.body.startDate,
@@ -107,7 +108,7 @@ const update = async (req, res) => {
     );
 
     if (!goal) {
-      return res.status(403).send("Not authorised to udpate this goal.");
+      return res.status(403).send("Not authorised to update this goal.");
     }
 
     res.redirect("/fitnessGoals");
@@ -117,12 +118,12 @@ const update = async (req, res) => {
   }
 };
 
-// Delete a single goal by ID (with ownership check)
-const remove = async (req, res) => {
+// DELETE Securely delete a goal only if it belongs to the session user
+const deleteGoal = async (req, res) => {
   try {
     const deleted = await FitnessGoal.findOneAndDelete({
       _id: req.params.id,
-      userId: req.session.userId // ensure only the owner can delete
+      userId: req.session.userId
     });
 
     if (!deleted) {
@@ -135,11 +136,13 @@ const remove = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-module.exports = {
+
+// Export ESM syntax
+export {
   index,
-  new: newForm,
+  newForm,
   bulkCreateOrUpdate,
   edit,
   update,
-  deleteGoal: remove
+  deleteGoal
 };
