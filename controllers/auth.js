@@ -81,8 +81,10 @@ router.post("/sign-in", async (req, res) => {
   if (!validPassword) {
     return res.send(`
       <h1>Sign in failed! Please try again.</h1>
+      <div class="mt-5">
       <p><a href="/auth/sign-in">Try Sign In Again</a></p>
-      <p><a href="/">Home</a></p>
+      <p><a href="/" class="button is-light">Home</a></p>
+      </div>
     `);
   }
 

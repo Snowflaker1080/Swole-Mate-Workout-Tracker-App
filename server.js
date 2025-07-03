@@ -88,7 +88,7 @@ import userRoutes from "./controllers/users.js";
 app.use("/auth", authController);
 app.use("/fitnessGoals", fitnessGoalsRoutes);
 app.use("/gymWorkout", gymWorkoutRoutes);
-app.use("/imagetest", imageProxyRoutes);
+app.use("/", imageProxyRoutes); // Image Proxy Route
 app.use("/users", userRoutes);
 
 // GET - HOMEPAGE

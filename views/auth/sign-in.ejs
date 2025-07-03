@@ -3,22 +3,78 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
     <title>Sign In</title>
   </head>
-  <body>
-    <h1>Sign in</h1>
-    <form action="/auth/sign-in" method="POST">
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username" />
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password" />
-      <button type="submit">Sign In</button>
-    </form>
-      
-    <nav><ul><li>
-        <a href="/">Home</a></li>
-    </li></ul></nav>
 
+  <div class="has-text-centered mt-5 mb-4">
+    <figure class="image is-96x96 is-inline-block">
+      <img src="/stylesheets/images/Swole Mate Logo.png" alt="Logo" />
+    </figure>
+  </div>
+
+  <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <h1 class="title is-3 has-text-centered">Sign In to Your Account</h1>
+
+        <div class="box">
+  <form method="POST" action="/auth/sign-in">
+    <!-- Username -->
+    <div class="field">
+      <label class="label">Username</label>
+      <div class="control">
+        <input
+          class="input"
+          type="text"
+          name="username"
+          required
+          placeholder="Enter your username"
+        />
+      </div>
+    </div>
+
+                <!-- Password -->
+                <div class="field">
+                  <label class="label">Password</label>
+                  <div class="control">
+                    <input
+                      class="input"
+                      type="password"
+                      name="password"
+                      required
+                      placeholder="Enter your password"
+                    />
+                  </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="field is-grouped is-justify-content-center mt-4">
+                  <div class="control">
+                    <button class="button is-primary" type="submit">Sign In</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+<!-- Back to Home -->
+<div class="has-text-centered mt-3">
+  <a class="button is-light mb-2" href="/">← Back to Home</a>
+</div>
+
+<!-- Sign Up Link -->
+<div class="has-text-centered">
+  <p>
+    Don’t have an account?
+    <a href="/auth/sign-up" class="has-text-link">Sign up here</a>.
+  </p>
+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>

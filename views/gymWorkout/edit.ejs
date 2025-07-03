@@ -5,21 +5,108 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
 
-    <title>Edit Workout</title>
+    <title >Edit Workout</title>
   </head>
 
   <body>
     <section class="section">
       <div class="container">
-        <h1>Edit Workout</h1>
-        <form action="/gymWorkout/<%= workout._id %>" method="POST">
-          <input type="text" name="name" value="<%= workout.name %>" required />
-          <input type="text" name="bodyPart" value="<%= workout.bodyPart %>" />
-          <input type="text" name="equipment" value="<%= workout.equipment %>" />
-          <textarea name="instructions"><%= workout.instructions %></textarea>
-          <input type="url" name="image" value="<%= workout.image %>" />
-          <button type="submit">Update Workout</button>
-        </form>
+        <h1 class="title is-3">Edit Workout</h1>
+
+   <div class="box has-text-centered mb-5">
+    <% if (workout.image) { %>
+    <figure class="image is-128x128 is-inline-block mb-3">
+      <img 
+        src="/image-proxy?url=<%= encodeURIComponent(workout.image) %>" 
+        alt="<%= workout.name %>" 
+      />
+    </figure>
+    <% } %>
+    <h2 class="title is-4"><%= workout.name %></h2>
+  </div>
+
+     <form action="/gymWorkout/<%= workout._id %>" method="POST">
+  <!-- Name -->
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">Exercise Name</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <input class="input" type="text" name="name" value="<%= workout.name %>" required />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body Part -->
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">Body Part</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <input class="input" type="text" name="bodyPart" value="<%= workout.bodyPart %>" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment -->
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">Equipment</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <input class="input" type="text" name="equipment" value="<%= workout.equipment %>" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Instructions -->
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">Instructions</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <textarea class="textarea" name="instructions"><%= workout.instructions %></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image -->
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">
+      <label class="label">Image URL</label>
+    </div>
+    <div class="field-body">
+      <div class="field">
+        <div class="control">
+          <input class="input" type="url" name="image" value="<%= workout.image %>" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="field is-grouped mt-4">
+    <div class="control">
+      <button class="button is-primary" type="submit">Update Workout</button>
+    </div>
+  </div>
+</form>
+
+        <!-- Back to Home -->
+        <div class="mt-5">
+          <a href="/gymWorkout" class="button is-light">Back to Exercises</a>
       </div>
     </section>
   </body>

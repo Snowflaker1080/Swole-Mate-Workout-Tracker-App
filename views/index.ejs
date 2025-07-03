@@ -3,56 +3,70 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Swole Mate App</title>
   </head>
+
   <body>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-8 has-text-centered">
+            
+            <!-- Logo Image -->
+            <figure class="image is-128x128 is-inline-block mb-4">
+              <img src="/stylesheets/images/Swole Mate Logo.png" alt="Swole Mate App Logo" />
+            </figure>
 
-    <h1>Swole Mate</h1>
-<% if (user) { %>
-  <p id="home-intro"><%= user.username %>'s workout tracker </p>
-<% } else { %>
-  <p id="home-intro">Your fitness & workout tracker </p>
-  <% } %>
-
-    <div class="image-container">
-      <img
-        src="/stylesheets/images/Swole Mate Logo.png"
-        alt="Swole Mate App Logo"
-      />
-    </div>
-
-    <p>An app for tracking your workouts.</p>
-
-    <div>
-      <nav>
-        <ul>
-          <li><a class="button is-primary" href="/gymWorkout">Browse Exercises</a></li>
-            <%if (user) {%>
-        <li><a class="button is-primary" href="/gymWorkout">My Gym Workouts</a></li>
-        <li><a class="button is-primary" href="/fitnessGoals">Fitness Goals</a></li>
-        <li><a class="button is-primary" href="/auth/sign-out">Sign out</a></li>
-    
+            <!-- Heading & Intro -->
+            <h1 class="title is-2">Swole Mate</h1>
+            <% if (user) { %>
+              <p class="subtitle is-5 mb-4"><%= user.username %>'s workout tracker</p>
             <% } else { %>
-      <p>
-        <li><a class="auth-link" href="/auth/sign-up" >Create an Account</a></li> or 
-        <li><a class="auth-link" href="/auth/sign-in" >Sign In</a></li> to view your workout plan
-      </p> 
+              <p class="subtitle is-5 mb-4">Your fitness & workout tracker</p>
             <% } %>
-        </ul>
-    </nav>
-  </div>
- 
+
+            <!-- Description -->
+            <p class="mb-5">An app for tracking your workouts, goals, and progress.</p>
+
+            <!-- Navigation Links -->
+            <nav class="mb-5">
+              <ul class="buttons is-centered is-flex-wrap-wrap">
+                <li><a class="button is-primary mx-2 my-1" href="/gymWorkout">Browse Exercises</a></li>
+
+                <% if (user) { %>
+                  <li><a class="button is-primary mx-2 my-1" href="/gymWorkout">My Gym Workouts</a></li>
+                  <li><a class="button is-primary mx-2 my-1" href="/fitnessGoals">Fitness Goals</a></li>
+                  <li><a class="button is-danger mx-2 my-1" href="/auth/sign-out">Sign Out</a></li>
+                <% } else { %>
+                  <li><a class="button is-link is-light mx-2 my-1" href="/auth/sign-up">Create an Account</a></li>
+                  <li><a class="button is-link is-light mx-2 my-1" href="/auth/sign-in">Sign In</a></li>
+                <% } %>
+              </ul>
+            </nav>
+
+            <!-- Guest Browse Link -->
             <% if (!user) { %>
-      <p><a class="auth-link" href="/gymWorkout">Browse exercises as a guest</a></p>
+              <p class="mb-5">
+                Or <a class="has-text-link" href="/gymWorkout">browse exercises as a guest</a>
+              </p>
             <% } %>
 
-  </body>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <footer>
-    Images by
-    <a href="https://wallpapercat.com/gta-v-wallpapers">Insert Image Attribution Here</a>
-  </footer>
-  
+    <!-- Footer -->
+    <footer class="footer has-text-centered">
+      <p>
+        Images by
+        <a href="https://wallpapercat.com/gta-v-wallpapers">Insert Image Attribution Here</a>
+      </p>
+    </footer>
+  </body>
 </html>

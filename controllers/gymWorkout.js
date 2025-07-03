@@ -30,7 +30,7 @@ async function index(req, res) {
       ...exercise,
       proxyImageUrl:
         exercise.image && exercise.image !== "image_coming_soon"
-          ? `/imagetest/image-proxy?url=${encodeURIComponent(exercise.image)}`
+          ? `/image-proxy?url=${encodeURIComponent(exercise.image)}`
           : null,
     }));
   } catch (err) {
@@ -47,7 +47,7 @@ async function index(req, res) {
       ...w.toObject(),
       proxyImageUrl:
         w.image && w.image !== "image_coming_soon"
-          ? `/imagetest/image-proxy?url=${encodeURIComponent(w.image)}`
+          ? `/image-proxy?url=${encodeURIComponent(w.image)}`
           : null,
     }));
 

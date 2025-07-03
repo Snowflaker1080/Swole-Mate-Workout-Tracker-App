@@ -3,30 +3,69 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
     <title>Sign Up</title>
   </head>
   <body>
-  
-    <h1>Create a new account!</h1>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <h1 class="title is-3 has-text-centered mb-4">Create a New Account</h1>
 
-    <form action="/auth/sign-up" method="POST">
+            <div class="box">
+              <form action="/auth/sign-up" method="POST">
+                <!-- Username -->
+                <div class="field">
+                  <label class="label" for="username">Username</label>
+                  <div class="control">
+                    <input class="input" type="text" name="username" id="username" required />
+                  </div>
+                </div>
 
-      <label for="username">Username:</label>
-      <input type="text" name="username" id="username" />
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password" />
-      <label for="confirmPassword">Confirm Password:</label>
-      <input type="password" name="confirmPassword" id="confirmPassword" />
+                <!-- Password -->
+                <div class="field">
+                  <label class="label" for="password">Password</label>
+                  <div class="control">
+                    <input class="input" type="password" name="password" id="password" required />
+                  </div>
+                </div>
 
-      <button type="submit">Sign Up</button>
-    </form>
+                <!-- Confirm Password -->
+                <div class="field">
+                  <label class="label" for="confirmPassword">Confirm Password</label>
+                  <div class="control">
+                    <input class="input" type="password" name="confirmPassword" id="confirmPassword" required />
+                  </div>
+                </div>
 
-    <p>Already have an account? <a href="/auth/sign-in">Sign In Here</a></p>
+                <!-- Submit Button -->
+                <div class="field is-grouped is-justify-content-center mt-4">
+                  <div class="control">
+                    <button class="button is-primary" type="submit">Sign Up</button>
+                  </div>
+                </div>
+              </form>
+            </div>
 
-      <nav><ul><li>
-        <a href="/">Home</a></li>
-    </li></ul></nav>
+            <!-- Sign In Link -->
+            <div class="has-text-centered mb-2">
+              <p>
+                Already have an account?
+                <a href="/auth/sign-in" class="has-text-link">Sign in here</a>.
+              </p>
+            </div>
 
+            <!-- Back to Home -->
+            <div class="has-text-centered">
+              <a class="button is-light" href="/">← Back to Home</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </body>
 </html>
