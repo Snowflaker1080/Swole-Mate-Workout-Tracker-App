@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Workout Calendar</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">6-Week Workout Calendar</h1>
 
-    <title>User Exercise Schedule</title>
-</head>
-
-<body>
-     <section class="section">
-    <div class="container">
-      <h1 class="title">
-        Your exercise schedule
-      </h1>
-      <p class="subtitle">
-        My first website with <strong>Bulma</strong>!
-      </p>
+        <!-- Unscheduled Workout Groups -->
+<h2 class="title is-4">Unscheduled Workout Groups</h2>
+<div class="columns is-multiline dropzone" id="unscheduled-groups" data-date="">
+  <% unscheduledGroups.forEach(group => { %>
+    <div class="column is-one-quarter">
+      <div class="box draggable-group" draggable="true" data-group-id="<%= group._id %>">
+        <strong><%= group.name %></strong><br />
+        <em><%= group.dayOfWeek %></em>
+      </div>
     </div>
-  </section> 
-</body>
+  <% }) %>
+</div>
 
+        <!-- 6 Week Calendar View -->
+        <% for (let week = 0; week < 6; week++) { %>
+          <h2 class="title is-4">Week <%= week + 1 %></h2>
+          <div class="columns is-multiline">
+            <% for (let day = 0; day < 7; day++) { 
+              const dateObj = calendar[week][day];
+            %>
+              <div class="column is-one-seventh">
+                <div class="box dropzone" data-date="<%= dateObj.date %>">
+                  <strong><%= dateObj.label %></strong><br />
+                  <small><%= dateObj.date %></small>
+                  <div class="group-exercise-list mt-2">
+                    <% dateObj.groups.forEach(group => { %>
+                    <div class="tag is-link is-light is-small mb-1 draggable-group"
+                      draggable="true"
+                      data-group-id="<%= group._id %>">
+                      <%= group.name %>
+                    </div>
+                    <% }) %>
+                  </div>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
+
+        <div class="mt-5">
+          <a href="/" class="button is-light">&larr; Back to Home</a>
+        </div>
+      </div>
+    </section>
+
+    <script src="/scripts/calendarDragDrop.js" defer></script>
+  </body>
 </html>

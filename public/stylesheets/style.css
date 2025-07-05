@@ -1,0 +1,7 @@
+.dropzone {
+  min-height: 150px;
+  background-color: #f0f0f0;
+  border: 2px dashed #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}

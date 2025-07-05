@@ -1,0 +1,11 @@
+<h2 class="title">My Weekly Workout Plan</h2>
+<% groups.forEach(group => { %>
+  <div class="box">
+    <strong><%= group.name %></strong> - <%= group.dayOfWeek %>
+    <ul>
+      <% group.exercises.forEach(ex => { %>
+        <li><%= ex.name %> (<%= ex.bodyPart %>)</li>
+      <% }) %>
+    </ul>
+  </div>
+<% }) %>

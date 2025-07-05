@@ -83,13 +83,17 @@ import fitnessGoalsRoutes from "./routes/fitnessGoals.js";
 import gymWorkoutRoutes from "./routes/gymWorkout.js";
 import isSignedIn from "./middleware/is-signed-in.js";
 import imageProxyRoutes from "./routes/imageProxy.js";
+import scheduleRoutes from "./routes/schedule.js";
 import userRoutes from "./controllers/users.js";
+import workoutGroupRoutes from "./routes/workoutGroup.js";
 
 app.use("/auth", authController);
 app.use("/fitnessGoals", fitnessGoalsRoutes);
 app.use("/gymWorkout", gymWorkoutRoutes);
 app.use("/", imageProxyRoutes); // Image Proxy Route
+app.use("/schedule", scheduleRoutes);
 app.use("/users", userRoutes);
+app.use("/workoutGroup", workoutGroupRoutes);
 
 // GET - HOMEPAGE
 app.get("/", async (req, res) => {

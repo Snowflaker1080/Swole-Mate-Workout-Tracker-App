@@ -1,0 +1,33 @@
+<h2 class="title">Create Workout Group</h2>
+<form method="POST" action="/workoutGroup">
+  <div class="field">
+    <label class="label">Group Name</label>
+    <input class="input" name="name" required placeholder="e.g. Arm Blast" />
+  </div>
+
+  <div class="field">
+    <label class="label">Day of the Week</label>
+    <div class="select">
+      <select name="dayOfWeek" required>
+        <option disabled selected>Select Day</option>
+        <% ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].forEach(day => { %>
+          <option value="<%= day %>"><%= day %></option>
+        <% }) %>
+      </select>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="label">Select Exercises</label>
+    <% exercises.forEach(ex => { %>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" name="selectedExercises" value="<%= ex._id %>" />
+          <%= ex.name %> (<%= ex.bodyPart %>)
+        </label>
+      </div>
+    <% }) %>
+  </div>
+
+  <button class="button is-primary">Create Group</button>
+</form>

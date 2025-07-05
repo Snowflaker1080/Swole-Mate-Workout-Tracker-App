@@ -1,64 +1,85 @@
 // ECMAScript Modules (ESM) syntax
-import GymWorkout from "../models/gymWorkout.js";
 import fetch from "node-fetch";
+import GymWorkout from "../models/gymWorkout.js";
+import WorkoutGroup from "../models/workoutGroup.js";
 
 // INDEX: Search & display workouts
 async function index(req, res) {
-  const query = req.query.q || "Deadlift"; // default search
+  const query = req.query.q || "";
   const bodyPart = req.query.bodyPart || "";
+  const muscleSearchh = req.query.muscle === "true"; // Muscle search
   let exercises = [];
 
-  const url = `https://gym-fit.p.rapidapi.com/v1/exercises/search?query=${query}&number=50&offset=0${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
-
   try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "X-RapidAPI-Key": process.env.GYMFIT_API_KEY,
-        "X-RapidAPI-Host": "gym-fit.p.rapidapi.com",
-        "Access-Control-Allow-Origin": "*",
-      },
-    });
+    if (muscleSearchh) {
+      // Search by muscle
+      const muscleUrl = `https://gym-fit-main-868a98d.zuplo.app/v1/muscles/search?query=${query}&offset=0&number=50${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
 
-    const data = await response.json();
-    console.log("DATAIS", data);
+      const response = await fetch(muscleUrl, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${process.env.GYMFIT_API_KEY}`,
+        },
+      });
 
-    exercises = Array.isArray(data.results) ? data.results : [];
+      const data = await response.json();
+      exercises = Array.isArray(data) ? data : [];
+    } else {
+      // Search by exercise (default)
+      const url = `https://gym-fit.p.rapidapi.com/v1/exercises/search?query=${query}&number=50&offset=0${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
 
-    // Process exercises to add proxy image URLs
-    exercises = exercises.map((exercise) => ({
-      ...exercise,
-      proxyImageUrl:
-        exercise.image && exercise.image !== "image_coming_soon"
-          ? `/image-proxy?url=${encodeURIComponent(exercise.image)}`
-          : null,
-    }));
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "X-RapidAPI-Key": process.env.GYMFIT_API_KEY,
+          "X-RapidAPI-Host": "gym-fit.p.rapidapi.com",
+        },
+      });
+
+      const data = await response.json();
+      exercises = Array.isArray(data.results) ? data.results : [];
+
+      // Add proxy image URLs
+      exercises = exercises.map((exercise) => ({
+        ...exercise,
+        proxyImageUrl:
+          exercise.image && exercise.image !== "image_coming_soon"
+            ? `/image-proxy?url=${encodeURIComponent(exercise.image)}`
+            : null,
+      }));
+    }
   } catch (err) {
     console.error("API fetch error:", err);
   }
 
-  // Saved workouts and add proxy image URLs
+  // Load saved workouts and add proxy image URLs
+  let savedWorkouts = [];
   try {
     const savedWorkoutsRaw = await GymWorkout.find({
       userId: req.session.userId,
     });
-
-    const savedWorkouts = savedWorkoutsRaw.map((w) => ({
+    savedWorkouts = savedWorkoutsRaw.map((w) => ({
       ...w.toObject(),
       proxyImageUrl:
         w.image && w.image !== "image_coming_soon"
           ? `/image-proxy?url=${encodeURIComponent(w.image)}`
           : null,
     }));
-
-    res.render("gymWorkout/index", {
-      exercises,
-      savedWorkouts,
-    });
   } catch (err) {
     console.error("Error loading saved workouts:", err);
     res.status(500).send("Failed to load saved workouts");
   }
+
+  // Render workout groups as drop zones
+  const workoutGroups = await WorkoutGroup.find({ userId: req.session.userId }).populate("exercises");
+
+  res.render("gymWorkout/index", {
+    exercises,
+    savedWorkouts,
+    workoutGroups,
+    user: req.user,
+    isMuscleSearch: req.query.muscle === "true", 
+  });
 }
 
 // Image Proxy
