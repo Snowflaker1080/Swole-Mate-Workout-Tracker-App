@@ -3,12 +3,12 @@ import GymWorkout from "../models/gymWorkout.js";
 
 export async function index(req, res) {
   const groups = await WorkoutGroup.find({ userId: req.session.userId }).populate("exercises");
-  res.render("workoutGroup/index", { groups });
+  res.render("workoutGroups/index", { groups });
 }
 
 export async function newForm(req, res) {
   const exercises = await GymWorkout.find({ userId: req.session.userId });
-  res.render("workoutGroup/new", { exercises });
+  res.render("workoutGroups/new", { exercises });
 }
 
 export async function create(req, res) {
@@ -22,5 +22,5 @@ export async function create(req, res) {
   });
 
   await group.save();
-  res.redirect("/workoutGroup");
+  res.redirect("/workoutGroups");
 }

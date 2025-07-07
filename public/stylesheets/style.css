@@ -1,7 +1,8 @@
+
+/* Dropzones */
 .dropzone {
-  min-height: 150px;
-  background-color: #f0f0f0;
-  border: 2px dashed #ccc;
+  background-color: #f0f4f8;
+  border: 1px dashed #b5b5b5;
   padding: 1rem;
-  margin-bottom: 1rem;
+  margin-top: 1rem;
 }

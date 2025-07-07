@@ -1,33 +1,72 @@
-<h2 class="title">Create Workout Group</h2>
-<form method="POST" action="/workoutGroup">
-  <div class="field">
-    <label class="label">Group Name</label>
-    <input class="input" name="name" required placeholder="e.g. Arm Blast" />
-  </div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Create Workout Group</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">Create New Workout Group</h1>
 
-  <div class="field">
-    <label class="label">Day of the Week</label>
-    <div class="select">
-      <select name="dayOfWeek" required>
-        <option disabled selected>Select Day</option>
-        <% ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].forEach(day => { %>
-          <option value="<%= day %>"><%= day %></option>
-        <% }) %>
-      </select>
-    </div>
-  </div>
+        <form action="/workoutGroup" method="POST">
+          <!-- Group Name -->
+          <div class="field">
+            <label class="label">Group Name</label>
+            <div class="control">
+              <input class="input" type="text" name="name" placeholder="e.g. Push Day, Leg Day" required>
+            </div>
+          </div>
 
-  <div class="field">
-    <label class="label">Select Exercises</label>
-    <% exercises.forEach(ex => { %>
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" name="selectedExercises" value="<%= ex._id %>" />
-          <%= ex.name %> (<%= ex.bodyPart %>)
-        </label>
+          <!-- Day of the Week -->
+          <div class="field">
+            <label class="label">Day of the Week</label>
+            <div class="control">
+              <div class="select">
+                <select name="dayOfWeek" required>
+                  <option value="">Select Day</option>
+                  <option>Monday</option>
+                  <option>Tuesday</option>
+                  <option>Wednesday</option>
+                  <option>Thursday</option>
+                  <option>Friday</option>
+                  <option>Saturday</option>
+                  <option>Sunday</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Select Exercises -->
+          <div class="field">
+            <label class="label">Assign Exercises</label>
+            <% if (exercises.length > 0) { %>
+              <div class="columns is-multiline">
+                <% exercises.forEach(ex => { %>
+                  <div class="column is-half">
+                    <label class="checkbox">
+                      <input type="checkbox" name="selectedExercises" value="<%= ex._id %>">
+                      <strong><%= ex.name %></strong>
+                      <br>
+                      <small><%= ex.bodyPart %> | <%= ex.equipment %></small>
+                    </label>
+                  </div>
+                <% }) %>
+              </div>
+            <% } else { %>
+              <p class="has-text-grey">You have no saved exercises yet. <a href="/gymWorkout">Browse exercises</a> to add some.</p>
+            <% } %>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="field mt-4">
+            <div class="control">
+              <button class="button is-primary">Create Group</button>
+              <a href="/gymWorkout" class="button is-light">Cancel</a>
+            </div>
+          </div>
+        </form>
       </div>
-    <% }) %>
-  </div>
-
-  <button class="button is-primary">Create Group</button>
-</form>
+    </section>
+  </body>
+</html>

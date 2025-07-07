@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <link rel="stylesheet" href="/stylesheets/style.css" />
     <title>Gym Workout</title>
   </head>
   <body>
@@ -11,32 +12,48 @@
       <div class="container">
         <h1 class="title is-3">Explore Gym Exercises</h1>
 
-        <!-- Search Form -->
+<!-- Search Form -->
         <form class="box mb-5" method="GET" action="/gymWorkout">
           <div class="field is-grouped is-flex-wrap-wrap">
             <div class="control is-expanded">
-              <input class="input" type="text" name="q" placeholder="Search Exercise or Muscle (e.g Bench Press, Squat or Bicep, Tricep)" />
+              <input 
+              class="input" 
+              type="text" 
+              name="q" 
+              placeholder="Search Exercise or Muscle (e.g Bench Press, Squat or Bicep, Tricep)" 
+              value="<%= q %>" /> <!-- prefill value -->
             </div>
-            <div class="control">
-              <div class="select">
-                <select name="bodyPart">
-                  <option value="">All Body Parts</option>
-                  <option value="Arms">Arms</option>
-                  <option value="Back">Back</option>
-                  <option value="Chest">Chest</option>
-                  <option value="Core">Core</option>
-                  <option value="Legs">Legs</option>
-                  <option value="Shoulders">Shoulders</option>
-                </select>
-              </div>
-            </div>
-            <div class="control">
-              <button class="button is-link" type="submit">Search</button>
-            </div>
-          </div>
-        </form>
 
-        <!-- Search Results -->
+    <!-- Dropdown -->
+    <div class="control">
+      <div class="select">
+        <select name="bodyPart">
+          <option value="" <%= selectedBodyPart === "" ? "selected" : "" %>>All Body Parts</option>
+          <option value="Arms" <%= selectedBodyPart === "Arms" ? "selected" : "" %>>Arms</option>
+          <option value="Back" <%= selectedBodyPart === "Back" ? "selected" : "" %>>Back</option>
+          <option value="Chest" <%= selectedBodyPart === "Chest" ? "selected" : "" %>>Chest</option>
+          <option value="Legs" <%= selectedBodyPart === "Legs" ? "selected" : "" %>>Legs</option>
+          <option value="Shoulders" <%= selectedBodyPart === "Shoulders" ? "selected" : "" %>>Shoulders</option>
+          <option value="Core" <%= selectedBodyPart === "Core" ? "selected" : "" %>>Core</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="control">
+        <button class="button is-primary" type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+
+        <!-- Conditional message based on search -->
+        <% if (!hasSearched) { %>
+          <p class="notification is-light">Search to get started!</p>
+        <% } else if (exercises.length === 0) { %>
+          <p class="notification is-warning">No results found.</p>
+        <% } %>
+
+<!-- Search Results -->
         <h2 class="title is-4 mt-5">Search Results</h2>
         <% if (exercises.length > 0) { %>
           <% if (isMuscleSearch) { %>
@@ -54,6 +71,7 @@
               <% }) %>
             </div>
           <% } else { %>
+<!-- Search Exercises -->
             <div class="columns is-multiline">
               <% exercises.forEach(ex => { %>
                 <div class="column is-half">
@@ -62,7 +80,7 @@
                       <% if (ex.proxyImageUrl) { %>
                         <figure class="media-left">
                           <p class="image is-128x128">
-                            <img src="<%= ex.proxyImageUrl %>" alt="<%= ex.name %>" crossorigin="anonymous" />
+                            <img src="<%= ex.proxyImageUrl %>" alt="<%= ex.name %>" />
                           </p>
                         </figure>
                       <% } %>
@@ -70,8 +88,9 @@
                         <div class="content">
                           <p>
                             <strong><%= ex.name %></strong><br />
-                            <small><%= ex.bodyPart %> | <%= ex.equipment %></small><br />
-                            <%= ex.instructions %>
+                            Body Part: <%= ex.bodyPart %><br />
+                            Equipment: <%= ex.equipment %><br />
+                            Exercise Instructions: <%= ex.instructions %>
                           </p>
                         </div>
 
@@ -101,7 +120,7 @@
           <p class="has-text-danger">No results found. Try another search.</p>
         <% } %>
 
-        <!-- Saved Workouts -->
+<!-- Saved Workouts -->
         <h2 class="title is-4 mt-6">Saved Gym Exercises (Unassigned)</h2>
         <div id="saved-zone" class="dropzone" data-group-id="unassigned">
           <% if (savedWorkouts.length > 0) { %>
@@ -136,7 +155,7 @@
           <% } %>
         </div>
 
-        <!-- Workout Groups -->
+<!-- Workout Groups -->
 <h2 class="title is-4 mt-6">Workout Groups</h2>
 
 <pre><%= JSON.stringify(workoutGroups, null, 2) %></pre>
@@ -167,7 +186,13 @@
   <p>No workout groups found. <a href="/workoutGroup/new" class="button is-small is-link">Create one?</a></p>
 <% } %>
 
-        <!-- Back to Home -->
+<!-- Back to Create New Workout Exercise -->
+        <div class="mt-5">
+          <p><a href="/workoutGroup/new" class="button is-small is-link">Create New Workout Group</a></p>
+        </div>
+      </div>
+
+<!-- Back to Home -->
         <div class="mt-5">
           <a href="/" class="button is-light">← Back to Home</a>
         </div>

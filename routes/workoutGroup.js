@@ -1,12 +1,14 @@
 import express from "express";
 import * as groupController from "../controllers/workoutGroup.js";
 import isSignedIn from "../middleware/is-signed-in.js";
+import WorkoutGroup from "../models/workoutGroup.js";
 
 const router = express.Router();
 
 router.get("/", isSignedIn, groupController.index);
 router.get("/new", isSignedIn, groupController.newForm);
 router.post("/", isSignedIn, groupController.create);
+
 router.post("/:groupId/add-exercise", isSignedIn, async (req, res) => {
   const { groupId } = req.params;
   const { exerciseId } = req.body;

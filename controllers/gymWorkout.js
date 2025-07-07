@@ -7,14 +7,14 @@ import WorkoutGroup from "../models/workoutGroup.js";
 async function index(req, res) {
   const query = req.query.q || "";
   const bodyPart = req.query.bodyPart || "";
-  const muscleSearchh = req.query.muscle === "true"; // Muscle search
+  const muscleSearch = req.query.muscle === "true"; // Muscle search
   let exercises = [];
 
   try {
-    if (muscleSearchh) {
+    if (query.trim() !== "") {
+    if (muscleSearch) {
       // Search by muscle
       const muscleUrl = `https://gym-fit-main-868a98d.zuplo.app/v1/muscles/search?query=${query}&offset=0&number=50${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
-
       const response = await fetch(muscleUrl, {
         method: "GET",
         headers: {
@@ -27,7 +27,6 @@ async function index(req, res) {
     } else {
       // Search by exercise (default)
       const url = `https://gym-fit.p.rapidapi.com/v1/exercises/search?query=${query}&number=50&offset=0${bodyPart ? `&bodyPart=${bodyPart}` : ""}`;
-
       const response = await fetch(url, {
         method: "GET",
         headers: {
@@ -47,6 +46,7 @@ async function index(req, res) {
             ? `/image-proxy?url=${encodeURIComponent(exercise.image)}`
             : null,
       }));
+    }
     }
   } catch (err) {
     console.error("API fetch error:", err);
@@ -71,7 +71,7 @@ async function index(req, res) {
   }
 
   // Render workout groups as drop zones
-  const workoutGroups = await WorkoutGroup.find({ userId: req.session.userId }).populate("exercises");
+const workoutGroups = await WorkoutGroup.find({ userId: req.session.userId }).populate("exercises");
 
   res.render("gymWorkout/index", {
     exercises,
@@ -79,6 +79,9 @@ async function index(req, res) {
     workoutGroups,
     user: req.user,
     isMuscleSearch: req.query.muscle === "true", 
+    hasSearched: req.query.q?.trim() !== "", // passing hasSearched
+    q: req.query.q || "",
+    selectedBodyPart: req.query.bodyPart || ""
   });
 }
 
