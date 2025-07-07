@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
+    <title>Edit Workout Group</title>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">Edit Workout Group</h1>
+
+        <form
+          action="/workoutGroup/<%= group._id %>?_method=PUT"
+          method="POST"
+          class="box"
+        >
+          <!-- Name -->
+          <div class="field">
+            <label class="label">Group Name</label>
+            <div class="control">
+              <input
+                class="input"
+                type="text"
+                name="name"
+                value="<%= group.name %>"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Day Of Week -->
+          <div class="field">
+            <label class="label">Day of Week</label>
+            <div class="control">
+              <div class="select">
+                <select name="dayOfWeek" required>
+                  <% 
+                    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+                    days.forEach(day => { 
+                  %>
+                    <option
+                      value="<%= day %>"
+                      <%= group.dayOfWeek === day ? "selected" : "" %>
+                    ><%= day %></option>
+                  <% }) %>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Exercises Checkboxes -->
+          <div class="field">
+            <label class="label">Exercises</label>
+            <div class="control">
+              <% exercises.forEach(ex => { %>
+                <label class="checkbox">
+                  <input
+                    type="checkbox"
+                    name="selectedExercises"
+                    value="<%= ex._id %>"
+                    <%= group.exercises.some(e => e._id.toString() === ex._id.toString()) ? "checked" : "" %>
+                  />
+                  <%= ex.name %> (<%= ex.bodyPart %>)
+                </label>
+                <br/>
+              <% }) %>
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="field is-grouped">
+            <div class="control">
+              <button type="submit" class="button is-primary">Save Changes</button>
+            </div>
+            <div class="control">
+              <a href="/workoutGroup" class="button is-light">Cancel</a>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

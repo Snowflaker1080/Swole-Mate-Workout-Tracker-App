@@ -5,10 +5,17 @@ import WorkoutGroup from "../models/workoutGroup.js";
 
 const router = express.Router();
 
+// List and new
 router.get("/", isSignedIn, groupController.index);
 router.get("/new", isSignedIn, groupController.newForm);
 router.post("/", isSignedIn, groupController.create);
+// Edit
+router.get("/:id/edit",       isSignedIn, groupController.editForm);
+router.put("/:id",            isSignedIn, groupController.update);
+// Delete
+router.delete("/:id",         isSignedIn, groupController.destroy);
 
+// Add/remove exercises
 router.post("/:groupId/add-exercise", isSignedIn, async (req, res) => {
   const { groupId } = req.params;
   const { exerciseId } = req.body;
@@ -30,5 +37,7 @@ router.post("/:groupId/add-exercise", isSignedIn, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
 
 export default router;

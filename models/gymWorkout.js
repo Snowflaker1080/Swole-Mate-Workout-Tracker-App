@@ -7,7 +7,6 @@ const gymWorkoutSchema = new mongoose.Schema({
   apiId: {
     type: String,
     required: true,
-    unique: true, // Prevent duplicates if saving from API
   },
   name: {
     type: String,
@@ -38,7 +37,10 @@ const gymWorkoutSchema = new mongoose.Schema({
   tags: [String]
 });
 
-// Compile the schema into a Mongoose model called 'GymWorkout' - This automatically maps to the 'gymworkouts' collection in MongoDB
+// Compound index ensures uniqueness per user
+gymWorkoutSchema.index({ apiId: 1, userId: 1 }, { unique: true });
+
+// Compile the schema model into a Mongoose model called 'GymWorkout' - This automatically maps to the 'gymworkouts' collection in MongoDB
 const GymWorkout = mongoose.models.GymWorkout || mongoose.model("GymWorkout", gymWorkoutSchema);
 
 // Export the model using ESM syntax

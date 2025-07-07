@@ -8,6 +8,9 @@ import {
   create,
   editForm,
   update,
+  destroy,
+  saveApiWorkout,
+  unsaveApiWorkout,
 } from "../controllers/gymWorkout.js";
 
 import isSignedIn from "../middleware/is-signed-in.js";
@@ -15,14 +18,20 @@ import GymWorkout from "../models/gymWorkout.js";
 
 const router = express.Router();
 
-// Public route
+// Public routes
 router.get("/", index); // Exercise search visible to all
+router.get("/image-proxy", imageProxy); // Proxy image fetch
 
 // Protected routes
-router.get("/new", isSignedIn, newForm);
-router.post("/", isSignedIn, create);
-router.get("/:id/edit", isSignedIn, editForm);
-router.post("/:id", isSignedIn, update);
+router.get("/new", isSignedIn, newForm);                 // GET /gymWorkout/new — Render form
+router.post("/", isSignedIn, create);                    // POST /gymWorkout — Save manually created workout
+router.get("/:id/edit", isSignedIn, editForm);           // GET /gymWorkout/:id/edit — Edit a saved workout
+router.put("/:id", isSignedIn, update);                  // PUT /gymWorkout/:id — Update workout
+router.delete("/:id", isSignedIn, destroy);              // DELETE /gymWorkout/:id — Delete saved workout
+
+// Save/Unsave searched workouts from API (by apiId)
+router.post("/:apiId/save", isSignedIn, saveApiWorkout);        // POST /gymWorkout/:apiId/save — Save a searched workout
+router.delete("/:apiId/save", isSignedIn, unsaveApiWorkout);    // DELETE /gymWorkout/:apiId/save — Unsave it
 
   // Drop & drop feature - remove exercise from group.
 router.post("/:groupId/remove-exercise", isSignedIn, async (req, res) => {
@@ -53,7 +62,5 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// Proxy image fetch
-router.get("/image-proxy", imageProxy);
 
 export default router;
