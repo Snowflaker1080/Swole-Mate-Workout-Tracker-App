@@ -1,0 +1,86 @@
+<!-- views/partials/_exerciseTile.ejs -->
+<div class="column is-one-third">
+  <div
+    class="draggable-exercise"
+    draggable="true"
+    data-exercise-id="<%= ex._id || ex.id %>"
+  >
+    <div class="box tile-equal">
+      <div class="columns is-mobile is-align-items-stretch">
+        <!-- LEFT: Text + Buttons -->
+        <div class="column is-6">
+          <!-- Text block, top-aligned -->
+          <div class="content has-text-left">
+            <strong><%= ex.name %></strong><br>
+            <small>Body Part: <%= ex.bodyPart %></small><br>
+          </div>
+
+          <!-- Buttons row underneath text -->
+          <% if (user) { %>
+            <div class="buttons mt-3">
+              <!-- SAVE -->
+              <% if (!savedApiIds?.includes(ex.id)) { %>
+                <form action="/gymWorkout" method="POST" class="control">
+                  <input type="hidden" name="apiId"        value="<%= ex.id %>">
+                  <input type="hidden" name="name"         value="<%= ex.name %>">
+                  <input type="hidden" name="bodyPart"     value="<%= ex.bodyPart %>">
+                  <input type="hidden" name="equipment"    value="<%= ex.equipment %>">
+                  <input type="hidden" name="instructions" value="<%= ex.instructions %>">
+                  <input type="hidden" name="image"        value="<%= ex.image %>">
+                  <button type="submit" class="button is-primary is-small">Save</button>
+                </form>
+              <% } else if (ex._id) { %>
+                <!-- REMOVE -->
+                <form
+                  action="/gymWorkout/<%= ex._id %>?_method=DELETE"
+                  method="POST"
+                  class="control"
+                  onsubmit="return confirm('Remove from saved exercises?');"
+                >
+                  <button type="submit" class="button is-danger is-light is-small">
+                    Remove
+                  </button>
+                </form>
+              <% } %>
+
+              <!-- EDIT / DELETE (only when saved) -->
+              <% if (ex._id) { %>
+                <a
+                  href="/gymWorkout/<%= ex._id %>/edit"
+                  class="button is-warning is-small"
+                >
+                  Edit
+                </a>
+                <form
+                  action="/gymWorkout/<%= ex._id %>?_method=DELETE"
+                  method="POST"
+                  class="control"
+                  onsubmit="return confirm('Permanently delete this workout?');"
+                >
+                  <button type="submit" class="button is-danger is-small">
+                    Delete
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          <% } else { %>
+            <p class="mt-3 has-text-left">
+              <a href="/auth/sign-in">Sign in</a> to save this workout.
+            </p>
+          <% } %>
+        </div>
+
+        <!-- RIGHT: Image -->
+        <div class="column is-4 has-text-centered image-column">
+          <% if (ex.proxyImageUrl) { %>
+            <figure class="image custom-256">
+              <img
+              src="<%= ex.proxyImageUrl %>" 
+              alt="<%= ex.name %>">
+            </figure>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

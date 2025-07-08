@@ -5,13 +5,21 @@ document.addEventListener("DOMContentLoaded", () => {
     const draggables = document.querySelectorAll(".draggable-exercise");
 
     draggables.forEach((card) => {
+      // Make each card draggable
       card.setAttribute("draggable", true);
 
+      // Drag start: add dragging class and set transfer data
       card.addEventListener("dragstart", (e) => {
+        card.classList.add("dragging");
         const groupEl = card.closest(".dropzone");
         const fromGroupId = groupEl ? groupEl.dataset.groupId : "unassigned";
         e.dataTransfer.setData("exerciseId", card.dataset.exerciseId);
         e.dataTransfer.setData("fromGroupId", fromGroupId);
+      });
+
+      // Drag end: remove dragging class
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
       });
     });
   }

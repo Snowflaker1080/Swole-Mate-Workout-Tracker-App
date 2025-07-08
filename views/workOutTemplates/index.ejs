@@ -1,65 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    >
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <title>My Workout Plan</title>
+    <title>Workout Templates</title>
   </head>
-
   <body>
-    <div class="main-container">
-      <h1>My Workout Plan</h1>
-      
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3">Workout Templates</h1>
 
-      <!-- Saved Gym Workouts -->
-      <ul class="vehicle-list">
-        <% cars.forEach(car => { %>
-          <% if (car.DisplayName && car.Name) { %>
-            <li class="vehicle-card">
-              <a href="/cars/<%= car._id %>">
-                <div class="vehicle-img-wrapper">
-                  <img
-                    class="vehicle-img"
-                    src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
-                    alt="<%= car.DisplayName %> image"
-                    onerror="this.src='/stylesheets/images/placeholder.jpg';"
-                  />
-                </div>
-                <div class="vehicle-info">
-                  <h2 class="vehicle-name"><%= car.DisplayName %></h2>
+        <h2 class="title is-4">Saved Exercise Groups</h2>
 
-                  <p class="vehicle-manufacturer">
-                    Manufacturer: <%= car.Manufacturer || 'Unknown' %> 
-                  </p>
+        <% if (groups.length) { %>
+          <div class="columns is-multiline">
+          <% groups.forEach(group => { %>
+          <div class="column is-one-third">
 
-                    <p class="vehicle-class"> 
-                      Class: <%= car.Class || 'N/A' %>
-                  </p>
+        <!-- Exercise Groups UI -->
+        <%- include("../partials/_workoutGroup.ejs", { workoutGroups, user, savedApiIds }) %>
 
-                </div>
-              </a>
-            </li>
-          <% } %>
-        <% }) %>
-      </ul>
+        </div>
+          <% }) %>
+        </div>
+        <% } else { %>
+        <p>You haven’t created any groups yet.</p>
+        <% } %>
 
-      <!-- Navigation Links -->
-        <!-- Add Car Link -->
-      <div class="nav-links">
-        <a class="home-link-text" href="/cars/new">Add Custom Car</a>
-
-        <!-- Browse GTA V Vehicles Link -->
-        <a class="cars-index-link" href="/gtav">
-          <div class="home-link-text">Browse GTA V Vehicles</div>
-        </a>
-
-        <!-- Home Link -->
-        <a class="nav-link" href="/">
-          <div class="home-link-text">Home</div>
-        </a>
+        <div class="mt-5">
+          <p><a href="/workoutTemplates/new" class="button is-small is-link">Create New Template</a></p>
+        </div>
+        <div class="mt-5">
+          <a href="/" class="button is-light">← Back to Home</a>
+        </div>
       </div>
-    </div>
+    </section>
+    <script src="/scripts/dragAndDrop.js" defer></script>
   </body>
 </html>

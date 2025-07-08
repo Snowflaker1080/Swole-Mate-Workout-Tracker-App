@@ -1,0 +1,28 @@
+<h2 class="title is-4 mt-6">Exercise Groups</h2>
+<% if (workoutGroups && workoutGroups.length > 0) { %>
+  <div class="columns is-multiline is-align-items-stretch">
+    <% workoutGroups.forEach(group => { %>
+      <div class="column is-full">
+        <div class="box dropzone" data-group-id="<%= group._id %>">
+          <strong><%= group.name %></strong><br>
+          <em><%= group.dayOfWeek %></em>
+          <div class="group-exercise-list columns is-multiline">
+            <% group.exercises.forEach(ex => { %>
+              <%- include("../partials/_exerciseTile", { ex, user, savedApiIds }) %>
+            <% }) %>
+          </div>
+          <div class="buttons mt-3">
+            <a href="/workoutGroup/<%= group._id %>/edit" class="button is-warning is-small">Edit</a>
+            <form action="/workoutGroup/<%= group._id %>?_method=DELETE" method="POST"
+                  onsubmit="return confirm('Delete this workout group?');"
+                  style="display:inline;">
+              <button type="submit" class="button is-danger is-small">Delete</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p>No workout groups found.</p>
+<% } %>

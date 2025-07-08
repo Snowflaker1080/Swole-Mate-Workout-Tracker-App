@@ -86,6 +86,7 @@ import imageProxyRoutes from "./routes/imageProxy.js";
 import scheduleRoutes from "./routes/schedule.js";
 import userRoutes from "./controllers/users.js";
 import workoutGroupRoutes from "./routes/workoutGroup.js";
+import workoutTemplatesRoutes from "./routes/workoutTemplates.js";
 
 app.use("/auth", authController);
 app.use("/fitnessGoals", fitnessGoalsRoutes);
@@ -94,6 +95,7 @@ app.use("/", imageProxyRoutes); // Image Proxy Route
 app.use("/schedule", scheduleRoutes);
 app.use("/users", userRoutes);
 app.use("/workoutGroup", workoutGroupRoutes);
+app.use('/workoutTemplates', workoutTemplatesRoutes);
 
 // GET - HOMEPAGE
 app.get("/", async (req, res) => {

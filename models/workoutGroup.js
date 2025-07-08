@@ -2,11 +2,20 @@ import mongoose from "mongoose";
 const { Schema } = mongoose;
 
 const workoutGroupSchema = new Schema({
-  name: { type: String, required: true }, // e.g. "Arms Day", "Legs + Cardio"
-  userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
-  exercises: [{ type: Schema.Types.ObjectId, ref: "GymWorkout" }], // saved workouts
-  scheduledDate: { type: String }, // e.g. '2025-07-10'
+  name:        { type: String, required: true },          // e.g. "Bicep Day"
+  userId:      { type: Schema.Types.ObjectId,
+                 ref: "User",
+                 required: true },
+  exercises:   [{ type: Schema.Types.ObjectId,
+                 ref: "GymWorkout" }],                   // saved workouts
+  scheduledDate: {
+    type: String,                                         // "2025-07-10"
+    default: null                                         // <— ensures the field exists (as null) when you clear a date
+  }
 });
 
-const WorkoutGroup = mongoose.models.WorkoutGroup || mongoose.model("WorkoutGroup", workoutGroupSchema);
-export default WorkoutGroup;
+workoutGroupSchema.set("toObject", { virtuals: true });
+workoutGroupSchema.set("toJSON",   { virtuals: true });
+
+export default mongoose.models.WorkoutGroup
+  || mongoose.model("WorkoutGroup", workoutGroupSchema);

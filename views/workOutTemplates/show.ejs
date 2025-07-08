@@ -1,65 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css" />
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <title><%= car.Name || 'Vehicle Details' %></title>
+    <meta charset="utf-8">
+    <title><%= workoutGroup.name %> – My Exercises</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css"
+    />
   </head>
-
   <body>
-    <div class="main-container">
-      <!-- Page Header -->
-      <h1><%= car.DisplayName || car.Name || 'Unknown Vehicle' %></h1>
+    <section class="section">
+      <div class="container">
+        <h1 class="title is-3"><%= workoutGroup.name %></h1>
+        <p class="subtitle is-5">
+          <a href="/schedule">← Back to calendar</a>
+        </p>
 
-      <!-- Vehicle Image -->
-      <div class="vehicle-img-wrapper">
-        <img
-          src="<%= car.imageUrl || '/stylesheets/images/placeholder.jpg' %>"
-          alt="<%= car.DisplayName || car.Name %> image"
-          class="vehicle-img"
-          onerror="this.src='/stylesheets/images/placeholder.jpg';"
-          style="max-width: 300px; display: block; margin: 0 auto"
-        />
+        <% if (workoutGroup.exercises.length) { %>
+          <div class="columns is-multiline">
+            <% workoutGroup.exercises.forEach(ex => { %>
+              <div class="column is-one-third">
+                <div class="box">
+                  <article class="media">
+                    <div class="media-content">
+                      <h2 class="title is-5"><%= ex.name %></h2>
+                      <p><strong>Body Part:</strong> <%= ex.bodyPart %></p>
+
+                    </div>
+                    <% if (ex.proxyImageUrl || ex.image) { %>
+                      <div class="media-right">
+                        <figure class="image is-128x128">
+                          <img
+                            src="<%= ex.proxyImageUrl || ex.image %>"
+                            alt="<%= ex.name %>"
+                          >
+                        </figure>
+                      </div>
+                    <% } %>
+                  </article>
+                  <div class="mt-3">
+                    <a
+                      class="button is-small is-info"
+                      href="/exercises/<%= ex._id %>"
+                    >View</a>
+                    <% if (user && String(ex.owner) === String(user._id)) { %>
+                      <a
+                        class="button is-small is-warning"
+                        href="/exercises/<%= ex._id %>/edit"
+                      >Edit</a>
+                      <form
+                        action="/exercises/<%= ex._id %>?_method=DELETE"
+                        method="POST"
+                        class="is-inline"
+                      >
+                        <button class="button is-small is-danger">
+                          Delete
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } else { %>
+          <p>No exercises found in this group.</p>
+        <% } %>
       </div>
-
-      <!-- Vehicle Details Section -->
-      <div class="vehicle-info-text" style="text-align: center; margin: 20px 0">
-        <p><strong>Name:</strong> <%= car.Name || 'Unknown' %></p>
-        <p><strong>Display Name:</strong> <%= car.DisplayName || 'Unknown' %></p>
-        <p><strong>Manufacturer:</strong> <%= car.Manufacturer || 'Unknown' %></p>
-        <p><strong>Class:</strong> <%= car.Class || 'Unknown' %></p>
-      </div>
-
-      <!-- Button Container -->
-      <div
-        class="button-container"
-        style="display: flex; justify-content: center; gap: 10px; flex-wrap: wrap"
-      >
-        <!-- Edit Link -->
-        <a href="/cars/<%= car._id %>/edit" class="shared-btn">Edit Vehicle</a>
-
-        <!-- Delete Form -->
-        <form
-          action="/cars/<%= car._id %>?_method=DELETE"
-          method="POST"
-          onsubmit="return confirm('Are you sure you want to delete this vehicle?');"
-        >
-          <button type="submit" class="shared-btn delete-button">Delete Vehicle</button>
-        </form>
-      </div>
-
-      <!-- Navigation Links -->
-      <div class="nav-links" style="margin-top: 30px">
-        <a class="cars-index-link" href="/cars">
-          <div class="index-link-text">My Garage</div>
-        </a>
-
-        <a class="home-link" href="/">
-          <div class="home-link-text">Home</div>
-        </a>
-      </div>
-    </div>
+    </section>
   </body>
 </html>

@@ -16,36 +16,61 @@
         <h1 class="title is-3">6-Week Workout Calendar</h1>
 
         <!-- Unscheduled Workout Groups -->
-<h2 class="title is-4">Unscheduled Workout Groups</h2>
-<div class="columns is-multiline dropzone" id="unscheduled-groups" data-date="">
-  <% unscheduledGroups.forEach(group => { %>
-    <div class="column is-one-quarter">
-      <div class="box draggable-group" draggable="true" data-group-id="<%= group._id %>">
-        <strong><%= group.name %></strong><br />
-        <em><%= group.dayOfWeek %></em>
-      </div>
-    </div>
-  <% }) %>
-</div>
+        <h2 class="title is-4">Workout Groups</h2>
+        <div
+          class="columns is-multiline dropzone"
+          id="unscheduled-groups"
+          data-date=""
+        >
+          <% unscheduledGroups.forEach(group => { %>
+            <div class="column is-one-quarter">
+              <div
+                class="box draggable-group"
+                draggable="true"
+                data-group-id="<%= group._id %>"
+                onclick="location.href='/workoutTemplates/<%= group._id %>'"
+                style="cursor: pointer;"
+              >
+                <strong><%= group.name %></strong><br />
+                <em><%= group.dayOfWeek %></em>
+              </div>
+            </div>
+          <% }) %>
+        </div>
 
         <!-- 6 Week Calendar View -->
         <% for (let week = 0; week < 6; week++) { %>
           <h2 class="title is-4">Week <%= week + 1 %></h2>
           <div class="columns is-multiline">
-            <% for (let day = 0; day < 7; day++) { 
-              const dateObj = calendar[week][day];
+            <% for (let day = 0; day < 7; day++) {
+                 const dateObj = calendar[week][day];
             %>
-              <div class="column is-one-seventh">
+            <div class="column is-one-seventh">
+            <div class="has-text-centered mb-2">
+              <% 
+                const formatted = new Date(dateObj.date)
+                  .toLocaleDateString('en-GB', {
+                      weekday: 'short',
+                      day:     '2-digit',
+                      month:   'short',
+                      year:    '2-digit'
+                  });
+                %>
+            <strong><%= formatted %></strong>
+              </div>
+
                 <div class="box dropzone" data-date="<%= dateObj.date %>">
-                  <strong><%= dateObj.label %></strong><br />
-                  <small><%= dateObj.date %></small>
-                  <div class="group-exercise-list mt-2">
+                  <div class="group-exercise-list">
                     <% dateObj.groups.forEach(group => { %>
-                    <div class="tag is-link is-light is-small mb-1 draggable-group"
-                      draggable="true"
-                      data-group-id="<%= group._id %>">
-                      <%= group.name %>
-                    </div>
+                      <div
+                        class="tag is-link is-light is-small mb-1 draggable-group"
+                        draggable="true"
+                        data-group-id="<%= group._id %>"
+                        onclick="location.href='/workoutTemplates/<%= group._id %>'"
+                        style="cursor: pointer;"
+                      >
+                        <%= group.name %>
+                      </div>
                     <% }) %>
                   </div>
                 </div>
@@ -53,6 +78,14 @@
             <% } %>
           </div>
         <% } %>
+
+        <div class="mt-5">
+          <p>
+            <a href="/gymWorkout" class="button is-small is-link"
+              >My Gym Workouts</a
+            >
+          </p>
+        </div>
 
         <div class="mt-5">
           <a href="/" class="button is-light">&larr; Back to Home</a>

@@ -3,7 +3,16 @@ import GymWorkout from "../models/gymWorkout.js";
 
 export async function index(req, res) {
   const groups = await WorkoutGroup.find({ userId: req.session.userId }).populate("exercises");
-  res.render("workoutGroups/index", { groups });
+
+  // ProxyImageUrl to each exercise in each group
+  for (const group of groups) {
+    group.exercises = group.exercises.map(ex => ({
+      ...ex.toObject(),
+      proxyImageUrl: ex.image
+    }));
+  }
+
+  res.render("workoutGroups/index", { workoutGroups: groups });
 }
 
 export async function newForm(req, res) {
@@ -33,10 +42,16 @@ export async function editForm(req, res) {
     userId: req.session.userId,
   }).populate("exercises");
   if (!group) return res.status(404).send("Not found");
+
+  // Attach proxyImageUrl
+  group.exercises = group.exercises.map(ex => ({
+    ...ex.toObject(),
+    proxyImageUrl: ex.image
+  }));
+
   const exercises = await GymWorkout.find({ userId: req.session.userId });
   res.render("workoutGroups/edit", { group, exercises });
 }
-
 // Handle form submission to update - "Save Changes Button"
 export async function update(req, res) {
   const { name, dayOfWeek, selectedExercises } = req.body;

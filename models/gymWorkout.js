@@ -14,7 +14,6 @@ const gymWorkoutSchema = new mongoose.Schema({
   },
   bodyPart: {
     type: String,
-    enum: ["Legs", "Back", "Chest", "Shoulders", "Arms", "Core"],
     required: true,
   },
   // Link the workout to a specific user (used for personalisation and CRUD control)
@@ -24,17 +23,13 @@ const gymWorkoutSchema = new mongoose.Schema({
   },
    image: {
     type: String,
-    validate: {
-      validator: function (url) {
-        return /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)(\?.*)?$/.test(url);
-      },
-      message: (props) => `${props.value} is not a valid image URL.`,
-    },
   },
+  localImagePath: String,   // e.g. "/uploads/exercises/12345-161234567890.png"
   notes: String,
   // Allow user to favourite a workout
   isFavourite: { type: Boolean, default: false },
-  tags: [String]
+  tags: [String],
+  
 });
 
 // Compound index ensures uniqueness per user

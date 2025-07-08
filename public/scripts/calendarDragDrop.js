@@ -1,70 +1,77 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const draggables = document.querySelectorAll(".draggable-group");
-  const dropzones = document.querySelectorAll(".dropzone");
+document.addEventListener('DOMContentLoaded', () => {
+  'use strict';
 
-  draggables.forEach(group => {
-    group.addEventListener("dragstart", e => {
-      e.dataTransfer.setData("groupId", group.dataset.groupId);
+  // Keep track of the element currently being dragged
+  let draggedEl = null;
+
+  /**
+   * Make an element draggable and wire up dragstart/dragend.
+   * @param {HTMLElement} el
+   */
+  function addDragListeners(el) {
+    el.setAttribute('draggable', 'true');
+
+    el.addEventListener('dragstart', e => {
+      draggedEl = el;
+      // Store its ID so we can identify it on drop if needed
+      e.dataTransfer.setData('text/plain', el.dataset.groupId);
+      // (Optional) Visual feedback
+      el.classList.add('is-being-dragged');
     });
-  });
+
+    el.addEventListener('dragend', () => {
+      draggedEl?.classList.remove('is-being-dragged');
+      draggedEl = null;
+    });
+  }
+
+  // 1️⃣ Initialize every existing .draggable-group
+  document.querySelectorAll('.draggable-group').forEach(addDragListeners);
+
+  // 2️⃣ Treat ALL .dropzone[data-date] as drop targets,
+  //    including Unscheduled (data-date="") and calendar days (data-date="YYYY-MM-DD")
+  const dropzones = document.querySelectorAll('.dropzone[data-date]');
 
   dropzones.forEach(zone => {
-    zone.addEventListener("dragover", e => {
-      e.preventDefault();
-      zone.classList.add("has-background-info-light");
+    // Highlight on dragover
+    zone.addEventListener('dragover', e => {
+      e.preventDefault();               // Required to allow a drop
+      zone.classList.add('has-background-light');
     });
 
-    zone.addEventListener("dragleave", () => {
-      zone.classList.remove("has-background-info-light");
+    // Remove highlight on leave
+    zone.addEventListener('dragleave', () => {
+      zone.classList.remove('has-background-light');
     });
 
-    zone.addEventListener("drop", async e => {
+    // Handle the drop
+    zone.addEventListener('drop', e => {
       e.preventDefault();
-      zone.classList.remove("has-background-info-light");
+      zone.classList.remove('has-background-light');
 
-      const groupId = e.dataTransfer.getData("groupId");
-      const date = zone.dataset.date; // Might be empty for unscheduled
+      if (!draggedEl) return;          // Nothing to do if we lost the reference
 
-      try {
-        const res = await fetch("/schedule/assign", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ groupId, date }), // date = "" unassigns
-        });
+      const isUnscheduled = zone.dataset.date === '';
 
-        if (res.ok) {
-          const groupBox = document.querySelector(`.draggable-group[data-group-id="${groupId}"]`);
-          if (groupBox) {
-            const clone = groupBox.cloneNode(true);
-            clone.classList.remove("draggable-group");
-            clone.classList.add("tag", "is-link", "is-light", "is-small", "mb-1");
-
-            if (date) {
-              // Dropped into calendar box
-              const targetList = zone.querySelector(".group-exercise-list");
-              if (targetList) targetList.appendChild(clone);
-            } else {
-              // Dropped into unscheduled area
-              const targetCol = document.createElement("div");
-              targetCol.classList.add("column", "is-one-quarter");
-
-              const unscheduledBox = document.createElement("div");
-              unscheduledBox.classList.add("box", "draggable-group");
-              unscheduledBox.setAttribute("draggable", "true");
-              unscheduledBox.dataset.groupId = groupId;
-              unscheduledBox.innerHTML = groupBox.innerHTML;
-
-              targetCol.appendChild(unscheduledBox);
-              zone.appendChild(targetCol);
-            }
-
-            groupBox.remove();
-          }
-        } else {
-          alert("Failed to assign group");
+      if (isUnscheduled) {
+        // — Unscheduled panel —
+        // If we’re dropping a clone back onto Unscheduled, simply remove it
+        // (the original unscheduled .box never went away)
+        if (!draggedEl.closest('#unscheduled-groups')) {
+          draggedEl.remove();
         }
-      } catch (err) {
-        console.error("Drop error:", err);
+      } else {
+        // — Calendar day drop —
+        const list = zone.querySelector('.group-exercise-list');
+        // If dragging from Unscheduled, clone & append; 
+        // otherwise (dragging a scheduled clone) just move it
+        if (draggedEl.closest('#unscheduled-groups')) {
+          const clone = draggedEl.cloneNode(true);
+          addDragListeners(clone);
+          list.appendChild(clone);
+        } else {
+          list.appendChild(draggedEl);
+        }
       }
     });
   });
