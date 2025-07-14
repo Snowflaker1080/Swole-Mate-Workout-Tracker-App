@@ -17,7 +17,7 @@ export async function index(req, res) {
       const date = today.add(w * 7 + (d - today.isoWeekday()), "day");
       const isoDate = date.format("YYYY-MM-DD");
       const label = date.format("ddd D MMM");
-      const relative = date.from(today); // e.g., "in 3 days"
+      const relative = date.from(today);
 
       // Get groups assigned to this date
       const groups = await WorkoutGroup.find({
@@ -25,24 +25,22 @@ export async function index(req, res) {
         scheduledDate: isoDate,
       });
 
-      week.push({
-        date: isoDate,
-        label,
-        relative,
-        groups,
-      });
+      week.push({ date: isoDate, label, relative, groups });
     }
 
     calendar.push(week);
   }
 
-  // Fetch unscheduled groups
+  // Fetch unscheduled groups (never scheduled or explicitly cleared)
   const unscheduledGroups = await WorkoutGroup.find({
     userId: req.session.userId,
-    scheduledDate: { $exists: false },
+    $or: [
+      { scheduledDate: { $exists: false } },
+      { scheduledDate: null },
+    ],
   });
 
-// render to EJS view
+  // Render calendar view
   res.render("schedule/index", {
     calendar,
     todayLabel: today.format("dddd, D MMMM YYYY"),
@@ -50,14 +48,30 @@ export async function index(req, res) {
   });
 }
 
-// Assign a workout group to a date
 export async function assign(req, res) {
   const { groupId, date } = req.body;
+
+  // Validate input
+  if (!groupId) {
+    return res.status(400).json({ error: "groupId is required" });
+  }
+
   try {
-    await WorkoutGroup.findByIdAndUpdate(groupId, { scheduledDate: date || null });
-    res.sendStatus(200);
+    // Only update groups belonging to the current user
+    const updated = await WorkoutGroup.findOneAndUpdate(
+      { _id: groupId, userId: req.session.userId },
+      { scheduledDate: date || null },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ error: "WorkoutGroup not found" });
+    }
+
+    // Return the updated group so the client can re-render if needed
+    res.json({ success: true, group: updated });
   } catch (err) {
     console.error("Assignment error:", err);
-    res.sendStatus(500);
+    res.status(500).json({ error: "Server error" });
   }
 }

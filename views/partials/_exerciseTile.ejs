@@ -1,11 +1,13 @@
-<!-- views/partials/_exerciseTile.ejs -->
 <div class="column is-one-third">
   <div
-    class="draggable-exercise"
+    class="box tile-equal draggable-exercise"
     draggable="true"
     data-exercise-id="<%= ex._id || ex.id %>"
+    data-name="<%= ex.name %>"
+    data-body-part="<%= ex.bodyPart %>"
+    data-equipment="<%= ex.equipment %>"
+    data-image="<%= ex.proxyImageUrl %>"
   >
-    <div class="box tile-equal">
       <div class="columns is-mobile is-align-items-stretch">
         <!-- LEFT: Text + Buttons -->
         <div class="column is-6">

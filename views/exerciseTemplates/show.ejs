@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= exercise.name %> – Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.4/css/bulma.min.css">
+  </head>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h1 class="title"><%= exercise.name %></h1>
+        <div class="columns">
+          <div class="column is-two-thirds">
+            <p><strong>Body Part:</strong> <%= exercise.bodyPart %></p>
+            <% if (exercise.equipment) { %>
+              <p><strong>Equipment:</strong> <%= exercise.equipment %></p>
+            <% } %>
+            <p class="mt-3"><%= exercise.instructions %></p>
+          </div>
+          <div class="column is-one-third">
+            <% if (exercise.proxyImageUrl || exercise.image) { %>
+              <figure class="image is-128x128">
+                <img src="<%= exercise.proxyImageUrl || exercise.image %>" alt="<%= exercise.name %>">
+              </figure>
+            <% } %>
+          </div>
+        </div>
+        <a href="/exerciseTemplates" class="button">← Back to all templates</a>
+      </div>
+    </section>
+  </body>
+</html>

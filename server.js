@@ -79,23 +79,24 @@ app.use((req, res, next) => {
 
 // Route connections
 import authController from "./controllers/auth.js"; // auth router holds all the auth endpoints
+import exerciseTemplatesRouter  from './routes/exerciseTemplates.js'
 import fitnessGoalsRoutes from "./routes/fitnessGoals.js";
 import gymWorkoutRoutes from "./routes/gymWorkout.js";
-import isSignedIn from "./middleware/is-signed-in.js";
 import imageProxyRoutes from "./routes/imageProxy.js";
 import scheduleRoutes from "./routes/schedule.js";
-import userRoutes from "./controllers/users.js";
+import userRoutes from "./routes/users.js";
 import workoutGroupRoutes from "./routes/workoutGroup.js";
-import workoutTemplatesRoutes from "./routes/workoutTemplates.js";
+import workoutTemplatesRouter   from './routes/workoutTemplates.js'
 
 app.use("/auth", authController);
+app.use('/exerciseTemplates', exerciseTemplatesRouter)
 app.use("/fitnessGoals", fitnessGoalsRoutes);
 app.use("/gymWorkout", gymWorkoutRoutes);
-app.use("/", imageProxyRoutes); // Image Proxy Route
+app.use("/proxy", imageProxyRoutes); // Image Proxy Route
 app.use("/schedule", scheduleRoutes);
 app.use("/users", userRoutes);
 app.use("/workoutGroup", workoutGroupRoutes);
-app.use('/workoutTemplates', workoutTemplatesRoutes);
+app.use('/workoutTemplates', workoutTemplatesRouter)
 
 // GET - HOMEPAGE
 app.get("/", async (req, res) => {

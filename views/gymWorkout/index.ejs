@@ -51,19 +51,21 @@
           <p class="notification is-warning">No results found.</p>
         <% } %>
 
-        <!-- Search Results -->
-        <h2 class="title is-4 mt-5">Search Results</h2>
-        <% if (exercises.length > 0) { %>
+      <!-- Search Results -->
+      <h2 class="title is-4 mt-5">Search Results</h2>
+      <% if (exercises.length > 0) { %>
+        <div id="search-zone" class="dropzone" data-group-id="search">
           <div class="columns is-multiline is-align-items-stretch">
             <% exercises.forEach(ex => { %>
               <%- include("../partials/_exerciseTile", { ex, user, savedApiIds }) %>
             <% }) %>
           </div>
-        <% } %>
+        </div>
+      <% } %>
 
-        <!-- Saved Gym Exercises (Unassigned) -->
-        <h2 class="title is-4 mt-6">Saved Exercises (Unassigned)</h2>
-        <div id="saved-zone" class="dropzone" data-group-id="unassigned">
+        <!-- Saved Gym Exercises -->
+        <h2 class="title is-4 mt-6">Saved Exercises</h2>
+        <div id="saved-zone" class="dropzone" data-group-id="saved">
           <% if (savedWorkouts.length > 0) { %>
             <div id="saved-exercises" class="columns is-multiline">
               <% savedWorkouts.forEach(ex => { %>
@@ -76,7 +78,7 @@
         </div>
 
         <!-- Exercise Groups partial-->
-        <%- include("../partials/_workoutGroup.ejs", { workoutGroups, user, savedApiIds }) %>
+        <%- include("../partials/_workoutGroup", { workoutGroups, user, savedApiIds }) %>
 
         <!-- Action Links -->
         <div class="mt-5">

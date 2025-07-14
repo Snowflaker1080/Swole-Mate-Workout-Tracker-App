@@ -38,27 +38,45 @@
                       </div>
                     <% } %>
                   </article>
-                  <div class="mt-3">
-                    <a
-                      class="button is-small is-info"
-                      href="/exercises/<%= ex._id %>"
+<div class="content mt-3">
+  <div class="field is-grouped is-align-items-center">
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <span>3 x 8 x 50kg</span>
+  </div>
+  <div class="field is-grouped is-align-items-center">
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <span>3 x 9 x 50kg</span>
+  </div>
+  <div class="field is-grouped is-align-items-center">
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <label class="checkbox mr-2"><input type="checkbox"></label>
+    <span>3 x 10 x 50kg</span>
+  </div>
+</div>
+                 <div class="mt-3">
+                  <a
+                    class="button is-small is-info"
+                    href="/exerciseTemplates/<%= ex._id %>"
                     >View</a>
                     <% if (user && String(ex.owner) === String(user._id)) { %>
-                      <a
-                        class="button is-small is-warning"
-                        href="/exercises/<%= ex._id %>/edit"
-                      >Edit</a>
-                      <form
-                        action="/exercises/<%= ex._id %>?_method=DELETE"
-                        method="POST"
-                        class="is-inline"
-                      >
-                        <button class="button is-small is-danger">
-                          Delete
-                        </button>
-                      </form>
+                  <a
+                    class="button is-small is-warning"
+                    href="/exerciseTemplates/<%= ex._id %>/edit"
+                    >Edit</a>
+                  <form
+                    action="/exerciseTemplates/<%= ex._id %>?_method=DELETE"
+                    method="POST"
+                    class="is-inline"
+                    >
+                  <button class="button is-small is-danger">Delete</button>
+                   </form>
                     <% } %>
-                  </div>
+                    </div>
                 </div>
               </div>
             <% }) %>
