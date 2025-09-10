@@ -1,21 +1,22 @@
-
 import FitnessGoal from "../models/fitnessGoal.js";
 
 async function index(req, res) {
   if (!req.user) {
-    return res.redirect('/auth/sign-in'); // fallback if middleware fails
+    return res.redirect("/auth/sign-in"); // fallback if middleware fails
   }
 
   const goals = await FitnessGoal.find({ userId: req.user._id });
-  res.render('fitnessGoals/index', { goals });
+  res.render("fitnessGoals/index", { goals });
 }
 
 // Render the multi-goal creation form
 const newForm = async (req, res) => {
   try {
-    const existingGoals = await FitnessGoal.find({ userId: req.session.userId });
+    const existingGoals = await FitnessGoal.find({
+      userId: req.session.userId,
+    });
     const goalMap = {};
-    existingGoals.forEach(goal => {
+    existingGoals.forEach((goal) => {
       goalMap[goal.goalType] = goal;
     });
 
@@ -50,7 +51,7 @@ const bulkCreateOrUpdate = async (req, res) => {
           targetValue: data.targetValue,
           unit: data.unit,
           startDate: data.startDate,
-          targetDate: data.targetDate
+          targetDate: data.targetDate,
         },
         { upsert: true, new: true }
       )
@@ -80,12 +81,11 @@ const edit = async (req, res) => {
       startRestingHR: "Resting Heart Rate",
       targetRestingHR: "Target Heart Rate",
       startVO2Max: "Start VO2 Max",
-      targetVO2Max: "Target VO2 Max"
+      targetVO2Max: "Target VO2 Max",
     };
 
     const goalLabel = goalLabels[goal.goalType] || goal.goalType;
     res.render("fitnessGoals/edit", { goal, goalLabel });
-
   } catch (err) {
     console.error("Error loading edit form:", err);
     res.status(500).send("Internal Server Error");
@@ -102,7 +102,7 @@ const update = async (req, res) => {
         targetValue: req.body.targetValue,
         unit: req.body.unit,
         startDate: req.body.startDate,
-        targetDate: req.body.targetDate
+        targetDate: req.body.targetDate,
       },
       { new: true, runValidators: true }
     );
@@ -123,7 +123,7 @@ const deleteGoal = async (req, res) => {
   try {
     const deleted = await FitnessGoal.findOneAndDelete({
       _id: req.params.id,
-      userId: req.session.userId
+      userId: req.session.userId,
     });
 
     if (!deleted) {
@@ -138,11 +138,4 @@ const deleteGoal = async (req, res) => {
 };
 
 // Export ESM syntax
-export {
-  index,
-  newForm,
-  bulkCreateOrUpdate,
-  edit,
-  update,
-  deleteGoal
-};
+export { index, newForm, bulkCreateOrUpdate, edit, update, deleteGoal };
