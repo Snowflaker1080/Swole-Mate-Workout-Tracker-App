@@ -5,7 +5,6 @@ dotenv.config();
 
 // Module imports
 import express from "express";
-import fetch from "node-fetch";
 import methodOverride from "method-override";
 import mongoose from"mongoose";
 import morgan from"morgan";
@@ -16,6 +15,10 @@ import MongoStore from "connect-mongo";
 // Import ESM-compatible helpers for __dirname resolution
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+
+// Express port setup - environment variable or default to 3000 - (ternary statement)
+const app = express();
+const port = process.env.PORT || 3000;
 
 // Get __dirname equivalent in ESM
 const __filename = fileURLToPath(import.meta.url);
@@ -36,10 +39,6 @@ mongoose
 mongoose.connection.on("connected", () => {
   console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
 });
-
-// Express port setup - environment variable or default to 3000 - (ternary statement)
-const app = express();
-const port = process.env.PORT || 3000;
 
 // View engines
 app.set("view engine", "ejs"); // set view engine to ejs
@@ -120,7 +119,13 @@ app.use((req, res) => {
   res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`);
 });
 
+// Catch-all
+app.get('*', (_req, res) => res.redirect('/'));
+
+// 404 fallback (unreached if you redirect *)
+app.use((req, res) => res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`));
+
 // Server listener
-app.listen(port, () => {
-  console.log(`The express app/server is ready on http://localhost:${port}`);
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server ready on ${port}`);
 });
