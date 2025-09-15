@@ -1,9 +1,10 @@
 // ECMAScript Modules (ESM) syntax
-// Load environment variables
+
+// Load env
 import dotenv from "dotenv";
 dotenv.config();
 
-// Module imports
+// Core Module imports
 import express from "express";
 import methodOverride from "method-override";
 import mongoose from"mongoose";
@@ -11,6 +12,11 @@ import morgan from"morgan";
 import path from"path";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ESM
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Import ESM-compatible helpers for __dirname resolution
 import { fileURLToPath } from "url";
@@ -20,36 +26,52 @@ import { dirname } from "path";
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Get __dirname equivalent in ESM
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// MongoDB connection - folder name explicitly stated
-const db_url = process.env.MONGODB_URI;
-
-mongoose
-  .connect(db_url, { dbName: "SwoleMateApp" })
-  .then(() => {
-    console.log("Connected to MongoDB SwoleMateApp Database");
-  })
-  .catch((err) => {
-    console.error("MongoDB connection error:", err);
-  });
-
-mongoose.connection.on("connected", () => {
-  console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
-});
-
 // View engines
 app.set("view engine", "ejs"); // set view engine to ejs
 app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public"))); // serve images, CSS, JS
 
 // Core Middleware - to serve static files from the directory
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public"))); // serve images, CSS, JS
 app.use(express.urlencoded({ extended: true })); // Middleware to parse URL-encoded data from forms
 app.use(methodOverride("_method")); // Middleware for using HTTP verbs such as PUT or DELETE
 app.use(morgan("dev")); // Morgan for logging HTTP requests
+
+// Required config guards (fail fast on Heroku)
+const mongoUrl = process.env.MONGODB_URI;
+if (!mongoUrl) {
+  console.error('MONGODB_URI is missing — set it in Heroku Config Vars.');
+  process.exit(1);
+}
+if (!process.env.SESSION_SECRET) {
+  console.error('SESSION_SECRET is missing — set it in Heroku Config Vars.');
+  process.exit(1);
+}
+
+// Connect MongoDB (single connection)
+try {
+  await mongoose.connect(mongoUrl, { dbName: 'SwoleMateApp' });
+  console.log('Connected to MongoDB SwoleMateApp Database');
+} catch (err) {
+  console.error('MongoDB connection error:', err);
+  process.exit(1);
+}
+mongoose.connection.on('connected', () => {
+  console.log(`Mongoose connected to ${mongoose.connection.name}`);
+});
+
+// Sessions using the existing Mongoose client
+let sessionStore;
+try {
+  sessionStore = MongoStore.create({
+    client: mongoose.connection.getClient(),
+    collectionName: 'sessions',
+  });
+  console.log('Mongo session store initialised');
+} catch (err) {
+  console.error('Failed to create Mongo session store:', err);
+  process.exit(1);
+}
 
 // Session configuration for auth - Session middleware before routers 
 app.use(
