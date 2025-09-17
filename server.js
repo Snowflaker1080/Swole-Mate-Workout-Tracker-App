@@ -124,15 +124,15 @@ app.get("/", async (req, res) => {
 });
 
 // Wildcard handler
-app.get("/*spat", async (req, res) => {
-  try {
-    console.warn(`Unknown route accessed: ${req.originalUrl}`);
-    res.redirect("/");
-  } catch (err) {
-    console.error("Error handling unknown route:", err);
-    res.status(500).send("Something went wrong. Please try again.");
-  }
-});
+// app.get("/*spat", async (req, res) => {
+//   try {
+//     console.warn(`Unknown route accessed: ${req.originalUrl}`);
+//     res.redirect("/");
+//   } catch (err) {
+//     console.error("Error handling unknown route:", err);
+//     res.status(500).send("Something went wrong. Please try again.");
+//   }
+// });
 
 // Error handling fallback
 app.use((req, res) => {
@@ -140,8 +140,8 @@ app.use((req, res) => {
   res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`);
 });
 
-// Catch-all
-app.get('*', (_req, res) => res.redirect('/'));
+// // Catch-all
+// app.get('*', (_req, res) => res.redirect('/'));
 
 // 404 fallback (unreached if you redirect *)
 app.use((req, res) => res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`));
