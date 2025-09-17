@@ -124,7 +124,7 @@ app.get("/", async (req, res) => {
 });
 
 // Wildcard handler
-app.get("/spat*", async (req, res) => {
+app.get("/{*spat}", async (req, res) => {
   try {
     console.warn(`Unknown route accessed: ${req.originalUrl}`);
     res.redirect("/");
