@@ -141,7 +141,7 @@ app.use((req, res) => {
 });
 
 // // Catch-all
-app.get('{*}', (_req, res) => res.redirect('/'));
+app.get('{*any}', (_req, res) => res.redirect('/'));
 
 // 404 fallback (unreached if you redirect *)
 app.use((req, res) => res.status(404).send(`Cannot ${req.method} ${req.originalUrl}`));
