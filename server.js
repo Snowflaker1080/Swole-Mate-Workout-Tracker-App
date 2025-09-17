@@ -19,7 +19,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Import ESM-compatible helpers for __dirname resolution
-import { fileURLToPath } from "url";
 import { dirname } from "path";
 
 // Express port setup - environment variable or default to 3000 - (ternary statement)
